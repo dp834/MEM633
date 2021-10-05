@@ -1,0 +1,322 @@
+\documentclass{article}
+
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{pgfplots}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\author{Anthony Siddique, Damien Prieur, Jachin Philip, Obinna Ekeh}
+\title{Homework 1\\ MEM 633 \\ Group 1}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+Given: A system is governed by
+\begin{align*}
+\ddot{r} &= r\dot{\theta}^2 - \frac{k}{r^2} + u_1 \\
+\ddot{\theta} &= \frac{-2\dot{\theta}\dot{r}}{r}+\frac{1}{r}u_2
+\end{align*}
+
+If $u_1 = u_2 = 0$, the equations admit the solution
+\begin{align*}
+r &= \sigma \quad (\sigma \text{is a constant})\\
+\theta &= \omega t \quad (\omega \text{is a constant})\\
+\end{align*}
+where $\sigma^3\omega^2 = k$.
+Define
+$x_1 = r - \sigma$,
+$x_2 = \dot{r}$,
+$x_3 = \sigma(\theta-\omega t)$,
+$x_4 = \sigma(\dot{\theta} - \omega)$,
+and write a set of linearized differential equations which describe the resulting motion for small deviations from a given circular orbit.
+\newline
+\newline
+$$
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+x_4\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+r - \sigma\\
+\dot{r}\\
+\sigma(\theta-\omega t)\\
+\sigma(\dot{\theta} - \omega)\\
+\end{bmatrix}
+$$
+$$
+\begin{bmatrix}
+\dot{x}_1\\
+\dot{x}_2\\
+\dot{x}_3\\
+\dot{x}_4\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+\dot{r}\\
+\ddot{r}\\
+\sigma(\dot{\theta}-\omega)\\
+\sigma\ddot{\theta}\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+x_2\\
+r\dot{\theta}^2 - \frac{\sigma^3\omega^2}{r^2} \\
+x_4\\
+\sigma\frac{-2\dot{\theta}\dot{r}}{r}\\
+\end{bmatrix}
+$$
+Since we want these equations in terms of $x_1,x_2,x_3,x_4$ we can solve for $r,\dot{r},\theta,\dot{\theta}$ and substitute.
+
+$$
+\begin{bmatrix}
+\dot{x}_1\\
+\dot{x}_2\\
+\dot{x}_3\\
+\dot{x}_4\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+x_2 \\
+(x_1 + \sigma)(\frac{x_4}{\sigma} + \omega)^2 - \frac{\sigma^3\omega^2}{(x_1 + \sigma)^2} \\
+x_4 \\
+\sigma \frac{-2(\frac{x_4}{\sigma} + \omega)x_2}{x_1+\sigma} \\
+\end{bmatrix}
+$$
+Linearizing the system we get
+$$
+\begin{bmatrix}
+\dot{x}_1\\
+\dot{x}_2\\
+\dot{x}_3\\
+\dot{x}_4\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 & 1 & 0 & 0 \\
+\frac{(2\omega^2\sigma^3)}{(\sigma + x_1)^3} + (\omega + \frac{x_4}{\sigma})^2 & 0 & 0 & \frac{2(\sigma + x_1)(\omega\sigma + x_4)}{\sigma^2} \\
+0 & 0 & 0 & 1 \\
+\frac{2 x_2 (\omega\sigma + x_4)}{(\sigma + x_1)^2} & \frac{-2(\omega\sigma + x_4)}{\sigma + x_1} & 0 & \frac{-2 x_2}{\sigma + x_1} \\
+\end{bmatrix}
+$$
+Evaluating at our equilibrium point we get
+\begin{align*}
+x_1 = 0 \\
+x_2 = 0 \\
+x_3 = 0 \\
+x_4 = 0 \\
+\end{align*}
+And plugging these into the linearized model we find
+$$
+\begin{bmatrix}
+\dot{x}_1\\
+\dot{x}_2\\
+\dot{x}_3\\
+\dot{x}_4\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 & 1 & 0 & 0 \\
+3 \omega^2 & 0 & 0 & 2\omega \\
+0 & 0 & 0 & 1 \\
+0 & -2\omega & 0 & 0 \\
+\end{bmatrix}
+$$
+which describes the motion of the system for small deviations from a given circular orbit defined by the solution $r = \sigma$ and $\theta = \omega t$.
+
+\section*{Problem 2}
+Given: A system is governed by
+\begin{align*}
+\dot{v}_1+5v_1 &= 2u \\
+\dot{v}_2+v_2 -2v_1 &= 0 \\
+y &= 50 v_2
+\end{align*}
+where $v_1(t)$ and $v_2(t)$ are state variables and $y(t)$ and $u(t)$ are the output and the input of the system respectively.
+\begin{enumerate}[(a)]
+\item Compute the state transition matrix, the impulse response function, and the step response function of the system.
+Plot the impulse and the step responses based on the obtained functions. Is the system stable? Why?
+\newline
+\newline
+We can begin by writing the system in the form $\dot{x} = Ax +Bu$ and $y = Cx + Du$.
+Doing this we get
+$$
+\begin{bmatrix}
+\dot{v}_1 \\
+\dot{v}_2 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+-5 & 0 \\
+2 & -1 \\
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\
+v_2 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+2 \\
+0 \\
+\end{bmatrix}
+\begin{bmatrix}
+u
+\end{bmatrix}
+$$
+$$
+y =
+\begin{bmatrix}
+0 & 50 \\
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\
+v_2 \\
+\end{bmatrix}
+$$
+To find the state transition matrix we compute $e^{A (t-t_0)}$
+$$
+\Phi(t,t_0) =
+\begin{bmatrix}
+-e^{-2 t + t_0} (e^{t_0}-2 e^t) & e^{-t + t_0} (e^t-e^{t_0}) \\
+ 2 e^{-t + t_0} (e^{t_0}-e^t) & e^{-2t + t_0} (2 e^{t_0}-e^t) \\
+\end{bmatrix}
+$$
+The solution to $x(t)$ is
+$$ x(t) = e^{A t} x(t_0) + \int_0^t \Phi(t,\tau)B(\tau)u(\tau)d\tau $$
+For the impulse response we have $u(t) = \delta(t)$ and using the property of the delta function
+$$ \int_{-\infty}^\infty f(t)\delta(t-T) dt = f(T) $$
+Then the impulse response of our system is
+$$ x(t) = e^{A t}x(t_0)  + \Phi(t,0)B $$
+$$ x(t) = e^{A t}x(t_0)  + e^{A t}B $$
+$$
+\begin{bmatrix}
+v_1(t) \\
+v_2(t) \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+e^{-5 t} (x_{10}+2) \\
+\frac{1}{2} e^{-5 t} (e^{4 t} (x_{10}+2 x_{20}+2)-x_{10}-2) \\
+\end{bmatrix}
+$$
+Where $x(0) = \begin{bmatrix} v_{10} \\ v_{20} \end{bmatrix}$
+Using $(0,0)$ as the initial conditions we get
+$$
+\begin{bmatrix}
+v_1(t) \\
+v_2(t) \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+2 e^{-5 t} \\
+e^{-5 t} (e^{4 t}-1) \\
+\end{bmatrix}
+$$
+Now just for the output of the system we get
+$$ y(t) = 50e^{-5 t} (e^{4 t}-1) $$
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=.75]{{images/p2_impulse}.png}
+\end{figure}
+
+
+Now to find the step response we solve
+$$ x(t) = e^{A t} x(t_0) + \int_0^t \Phi(t,\tau)B(\tau)u(\tau)d\tau $$
+Where $u(t) = 1$
+$$ x(t) = e^{A t} x(t_0) + \int_0^t \Phi(t,\tau)B d\tau $$
+Solving this we get
+$$
+\begin{bmatrix}
+v_1(t) \\
+v_2(t) \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{1}{5} (e^{-5 t} (5 x_{10}-2)+2) \\
+\frac{1}{10} e^{-5 t} (5 e^{4 t} (x_{10}+2 x_{20}-2)+8 e^{5 t}-5 x_{10}+2) \\
+\end{bmatrix}
+$$
+Again, using $(0,0)$ as the initial conditions we get
+$$
+\begin{bmatrix}
+v_1(t) \\
+v_2(t) \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{1}{5} (2-2 e^{-5 t}) \\
+\frac{1}{5} (e^{-5 t}-5 e^{-t}+4) \\
+\end{bmatrix}
+$$
+Again just for the output of the system we get
+$$ y(t) = 10 (e^{-5 t}-5 e^{-t}+4) $$
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=.75]{{images/p2_step}.png}
+\end{figure}
+
+For stability we can look at the eigenvalues of $A$
+$$det(A-\lambda I) = 0$$
+$$
+\begin{vmatrix}
+-5-\lambda & 0 \\
+2 & -1 - \lambda
+\end{vmatrix}
+=(\lambda+5)(\lambda+1) \implies \lambda_1 = -5 \qquad \lambda_2 = -1
+$$
+Since both of our eigenvalues are in the left half plane the system is stable.
+
+
+
+\item Determine the transfer function of the system.
+Draw the Bode plots of the frequency response function of the system, and explain the physical meaning of the plots.
+\newline
+\newline
+The transfer function can be obtained by computing
+$$ H(s) = \frac{Y(s)}{U(s)} = C(sI-A)^{-1}B + D $$
+Starting with $(sI-A)^{-1}$
+$$ (sI-A)^{-1} =
+\begin{bmatrix}
+s+5 & 0 \\
+-2 & s+1\\
+\end{bmatrix}
+^{-1}
+=
+\frac{1}{(s+5)(s+1)}
+\begin{bmatrix}
+s+1 & 0 \\
+2  & s+5 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{1}{s+5} & 0 \\
+\frac{2}{(s+5)(s+1)} & \frac{1}{s+1} \\
+\end{bmatrix}
+$$
+Computing $H(s)$ we get
+$$ H(s) = \frac{200}{s^2 + 6s +5} $$
+To create the bode plot we substitute $ s = \omega j$ and plot $|H(s)|$
+$$ |H(\omega j)| = |\frac{200}{-\omega^2 + 5 + 6\omega j }| $$
+$$ |H(\omega j)| = \frac{200}{\sqrt{(\omega ^2+1) (\omega ^2+25)}} $$
+Graphing and computing the phase and gain margins we find
+\newline
+\begin{figure}[H]
+\centering
+\includegraphics[scale=.75]{{images/p2_bode_plot}.png}
+\end{figure}
+We have a gain margin of $\sqrt{4 \sqrt{2509}-13} \approx 13.69$ and a phase margin of $\tan ^{-1}\left(\frac{6 \sqrt{4 \sqrt{2509}-13}}{4 \sqrt{2509}-18}\right) \approx .42$
+Which means our system will remain stable if we increase our gain up to $13.7$, and our phase can be up to $.42$ radians and still remain stable.
+This doesn't guarantee they can both change that amount and still be stable.
+\end{enumerate}
+
+
+\end{document}
