@@ -353,12 +353,48 @@ $$
 which maps $\mathbb{R}^4$ to $\mathbb{R}^3$. Find the null space of $A$.
 \newline
 \newline
+By inspection we can see a few relationships
+$$ x_1 - x_2 = x_3 \qquad x_2 - x_3 = x_4 $$
+Since we only have 2 linearly independent columns the rank is 2.
+By the rank nullity theorem we know the dimension of the null space is 2.
+From these equations we can construct the null space
+$$
+\mathbb{N} =
+\begin{bmatrix}
+-1 &  0 \\
+ 1 & -1 \\
+ 1 &  1 \\
+ 0 &  1 \\
+\end{bmatrix}
+$$
 
 \section*{Problem 6}
 Show that if $\lambda_i$ is an eigenvalue of $A$, then $f(\lambda_i)$ is an eigenvalue of the matrix function $f(A)$.
 \newline
 \newline
-Need clarification on the wording, but should be something like $A = PDP^{-1}$ and show that it's just a sum of $D$'s or something.
+We know that if we have a diagonalizable matrix we can write it as $A = PDP^{-1}$ where the entry along $D$ are the eigenvalues and $P$ are the corresponding eigenvectors.
+Due to the form of $A$ taking powers can be shown to be equivalent to $A^k = PD^kP^{-1}$ as the inverses will cancel each other out when taking the powers.
+Let $f(x) = \sum_{k=0}^n a_k x^k$ be our general polynomial matrix function.
+Plugging in $f(A)$ and using the diagonalization property we have
+$$ f(A) = \sum_{k=0}^n a_k PD^kP^{-1} $$
+Using the communative property we can move the $P$ and $P^{-1}$ to be separate from the sum
+$$ f(A) = P(\sum_{k=0}^n a_k D^k)P^{-1} $$
+Since $D$ is diagonal and contains the initial eigenvalues after computing the sum we have another diagonal matrix which represents the new eigenvalues of $f(A)$.
+For each entry $\lambda_i$ in $D$ we can see that the diagonal entry is computed by $f(\lambda_i) = \sum_{k=0}^n a_k \lambda_i^k$.
+So we can write $f(A)$ in terms of it's eigenvalues
+$$ f(A) = P
+\begin{bmatrix}
+f(\lambda_1) & 0  & ... & 0 \\
+0 & \lambda_2 & ... & 0 \\
+... & ... & ... & ... \\
+0 & 0 & ... & \lambda_n \\
+\end{bmatrix}
+P^{-1}
+$$
+Where $\lambda_i$ is the $i$th eigenvalue of the matrix $A$.
+\newline
+\newline
+If a matrix is written in it's diagonal form the diagonal entry are the eigenvalues so we have shown the statement to be true.
 
 \section*{Problem 7}
 Consider the linear space $\mathbb{R}^2$.
@@ -366,13 +402,35 @@ Consider the linear space $\mathbb{R}^2$.
 \item Sketch all the points with $\norm{x}_1 = 1$.
 \newline
 \newline
+$$|x|+|y|=1$$
+This is going to be 4 lines making a square with its vertices touching $(0,1), (1,0), (0,-1), (-1,0)$
+\newline
+\begin{figure}[H]
+\centering
+\includegraphics[scale=.75]{{images/l1_norm}.png}
+\end{figure}
 
 \item Sketch all the points with $\norm{x}_2 = 1$.
 \newline
 \newline
+$$ \sqrt{x^2 + y^2} = 1$$
+This is a circle of radius 1 centered at the origin.
+\newline
+\begin{figure}[H]
+\centering
+\includegraphics[scale=.75]{{images/l2_norm}.png}
+\end{figure}
 
 \item Sketch all the points with $\norm{x}_\infty = 1$.
 \newline
+\newline
+$$\max{x,y} = 1$$
+This will make a square where the edges contain all the points $(-1,-1)$ to $(-1,1)$ to $(1,1)$ to $(1,-1)$ back to the first.
+The limitation of most graphing software picks a single point (or two) since a function is normally a 1 to 1 map from $x \to y$ so it appears that the vertial sides are missing.
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=.75]{{images/linfinity_norm}.png}
+\end{figure}
 \newline
 
 \end{enumerate}
