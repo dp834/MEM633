@@ -1,0 +1,77 @@
+\documentclass{article}
+
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{pgfplots}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+
+\author{Anthony Siddique, Damien Prieur, Jachin Philip, Obinna Ekeh}
+\title{Homework 2\\ MEM 633 \\ Group 1}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+$$ A = T \Lambda T^{-1} \qquad \Lambda = diag(\lambda_1,\lambda_2, ..., \lambda_n) $$
+Where $\lambda_i$ are distinct.
+Show that
+\begin{enumerate}[(a)]
+\item $e^{At} = Te^{\Lambda t}T^{-1}$
+\newline
+It is given that
+$$ e^x = \sum_{i=0}^\infty \frac{x^i}{i!} $$
+Plugging in $At$ we have
+$$ e^{At} = \sum_{i=0}^\infty \frac{(At)^i}{i!} $$
+Since $t$ is a scalar and $A$ is not it can be helpful to group like terms together
+$$ e^{At} = \sum_{i=0}^\infty A^i\frac{t^i}{i!} $$
+Now we plug in our definition of $A = T \Lambda T^{-1} $
+$$ e^{At} = \sum_{i=0}^\infty (T \Lambda T^{-1})^i\frac{t^i}{i!} $$
+TODO: Show that the matrix power reduces to $(T \Lambda^i T^{-1}$ and factor the $T$'s
+
+
+\item $e^{\Lambda t} = diag (e^{\lambda_1 t}, e^{\lambda_2 t}, e^{\lambda_n t})$
+\newline
+
+\end{enumerate}
+
+\section*{Problem 2}
+Consider the time-invariant system $\dot{x}(t) = Ax(t)$ where the $n$x$n$ matrix $A$ has distinct eigenvalues $\lambda_1, \lambda_2, ..., \lambda_n$.
+The corresponding eigenvectors are $e_1, e_2, ...,e_n$.
+Let $T = [e_1,e_2,...,e_n]$ and $v_1', v_2',...,v_n'$ be the row vectors of $T^{-1}$.
+Show that the solution of $\dot{x}(t)=Ax(t)$ can be written as
+$$ x(t) = \sum_{i=1}^n v_i' x(0) e^{\lambda_i t} e_i $$
+\newline
+\newline
+
+\section*{Problem 3}
+The $A$ matrix in Problem 2 is given as
+$$ A =
+\begin{bmatrix}
+0 & 1 \\
+6 & -5 \\
+\end{bmatrix}
+$$
+Write down the solution of $\dot{x}(t) = Ax(t)$ by using the result of Problem 2.
+You will see the system is unstable.
+However, $x(t)$ will be bounded if the initial state vector is in the stable subspace.
+Describe the stable subspace of the system.
+\newline
+
+
+\section*{Problem 4}
+Find the realizations in controller and observability forms of the transfer function
+$$ H(s) = \frac{2s^3+13s^2+31s+32}{s^3+6s^2+11s+6} $$
+Give both block diagrams and state-space equations.
+
+
+\end{document}
