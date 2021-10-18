@@ -37,10 +37,33 @@ $$ e^{At} = \sum_{i=0}^\infty A^i\frac{t^i}{i!} $$
 Now we plug in our definition of $A = T \Lambda T^{-1} $
 $$ e^{At} = \sum_{i=0}^\infty (T \Lambda T^{-1})^i\frac{t^i}{i!} $$
 TODO: Show that the matrix power reduces to $(T \Lambda^i T^{-1}$ and factor the $T$'s
+The powers of $A$ can be expanded as such
+$$ A^n = T\Lambda T^{-1} T\Lambda T^{-1}...T\Lambda T^{-1} = T\Lambda^n T^{-1} $$
+All of the $T$'s and $T^{-1}$ are paired off expect the first $T$ and the last $T^{-1}$.
+Plugging this into our formula we get
+$$ e^{At} = \sum_{i=0}^\infty T \Lambda^i T^{-1}\frac{t^i}{i!} $$
+Each term of the sum as a $T$ on the left and a $T^{-1}$ on the right so we can factor them out.
+$$ e^{At} = T(\sum_{i=0}^\infty \Lambda^i \frac{t^i}{i!})T^{-1} $$
+By definition the sum $\sum_{i=0}^\infty \Lambda^i \frac{t^i}{i!}$ is equal to the matrix exponential $e^{\Lambda t}$.
+Substituting that in we get
+$$ e^{At} = Te^{\Lambda t}T^{-1} $$
+
 
 
 \item $e^{\Lambda t} = diag (e^{\lambda_1 t}, e^{\lambda_2 t}, e^{\lambda_n t})$
 \newline
+A the multiplication of two diagonal matricies  $diag(a_1, a_2, ..., a_n) diag(b_1, b_2, ..., b_n)$ is another diagonal matrix with each entry multiplied by the corresponding entry $ diag(a_1b_1 a_2b_2, ..., a_nb_n)$
+So we have
+$$ e^{\Lambda t} = \sum_{i=0}^\infty \frac{(\Lambda t) ^i}{i!} $$
+Where each matrix will be a diagonal matrix of with $i$th powers of the eigenvalues.
+Looking at the sum we can look at each diagonal entry as such.
+$$ e^{\Lambda t}_k = \sum_{i=0}^\infty \frac{(\lambda_k t) ^i}{i!} $$
+Where $e^{\Lambda t}_k$ represents the value of the $k$th eigenvalue or diagonal entry.
+We can see that this is by defenintion equal to
+$$ e^{\lambda_k t} = \sum_{i=0}^\infty \frac{(\lambda_k t) ^i}{i!} $$
+So the $k$th entry on the diagonal of $e^{\Lambda t}$ will be $e^{\lambda t}$
+Putting it all together we get
+$$ e^{\Lambda t} = diag(e^{\lambda_1 t}, e^{\lambda_2 t}, ... , e^{\lambda_n t})$$
 
 \end{enumerate}
 
