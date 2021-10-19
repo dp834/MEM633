@@ -4,11 +4,12 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage[shortlabels]{enumitem}
-\usepackage{pgfplots}
 \usepackage{float}
 \usepackage{verbatim}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc}
 
 \usepackage{mathtools}
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}%
@@ -36,7 +37,6 @@ Since $t$ is a scalar and $A$ is not it can be helpful to group like terms toget
 $$ e^{At} = \sum_{i=0}^\infty A^i\frac{t^i}{i!} $$
 Now we plug in our definition of $A = T \Lambda T^{-1} $
 $$ e^{At} = \sum_{i=0}^\infty (T \Lambda T^{-1})^i\frac{t^i}{i!} $$
-TODO: Show that the matrix power reduces to $(T \Lambda^i T^{-1}$ and factor the $T$'s
 The powers of $A$ can be expanded as such
 $$ A^n = T\Lambda T^{-1} T\Lambda T^{-1}...T\Lambda T^{-1} = T\Lambda^n T^{-1} $$
 All of the $T$'s and $T^{-1}$ are paired off expect the first $T$ and the last $T^{-1}$.
@@ -52,14 +52,14 @@ $$ e^{At} = Te^{\Lambda t}T^{-1} $$
 
 \item $e^{\Lambda t} = diag (e^{\lambda_1 t}, e^{\lambda_2 t}, e^{\lambda_n t})$
 \newline
-A the multiplication of two diagonal matricies  $diag(a_1, a_2, ..., a_n) diag(b_1, b_2, ..., b_n)$ is another diagonal matrix with each entry multiplied by the corresponding entry $ diag(a_1b_1 a_2b_2, ..., a_nb_n)$
+The multiplication of two diagonal matrices  $diag(a_1, a_2, ..., a_n) diag(b_1, b_2, ..., b_n)$ is another diagonal matrix with each entry multiplied by the corresponding entry $ diag(a_1b_1 a_2b_2, ..., a_nb_n)$
 So we have
 $$ e^{\Lambda t} = \sum_{i=0}^\infty \frac{(\Lambda t) ^i}{i!} $$
 Where each matrix will be a diagonal matrix of with $i$th powers of the eigenvalues.
 Looking at the sum we can look at each diagonal entry as such.
 $$ e^{\Lambda t}_k = \sum_{i=0}^\infty \frac{(\lambda_k t) ^i}{i!} $$
 Where $e^{\Lambda t}_k$ represents the value of the $k$th eigenvalue or diagonal entry.
-We can see that this is by defenintion equal to
+We can see that this is by definition equal to
 $$ e^{\lambda_k t} = \sum_{i=0}^\infty \frac{(\lambda_k t) ^i}{i!} $$
 So the $k$th entry on the diagonal of $e^{\Lambda t}$ will be $e^{\lambda t}$
 Putting it all together we get
@@ -75,6 +75,38 @@ Show that the solution of $\dot{x}(t)=Ax(t)$ can be written as
 $$ x(t) = \sum_{i=1}^n v_i' x(0) e^{\lambda_i t} e_i $$
 \newline
 \newline
+If we take the differential equation and take the Laplace transform $\mathbb{L}$ we get
+$$
+\begin{aligned}
+\mathbb{L}(\dot{x}(t)) &= \mathbb{L}(Ax(t)) \\
+sX(s) - x(0) &= AX(s) \\
+(s-A)X(s) &= x(0) \\
+X(s) &= (s-A)^{-1}x(0) \\
+\end{aligned}
+$$
+Taking the inverse Laplace transform $\mathbb{L}^{-1}$ we can find the solution of $x(t)$
+$$
+\begin{aligned}
+\mathbb{L}^{-1}(X(s)) &= \mathbb{L}^{-1}((s-A)^{-1}x(0)) \\
+x(t) &= e^{At}x(0) \\
+x(t) &= Te^{\Lambda t}T^{-1}x(0) \\
+\end{aligned}
+$$
+Substituting $T$ and $T^{-1}$ we have
+$$ x(t) =
+\begin{bmatrix} e_1& e_2& ... & e_n\end{bmatrix}
+diag(e^{\lambda_1 t},e^{\lambda_2 t}, ..., e^{\lambda_n t})
+\begin{bmatrix} v_1' \\ v_2' \\ ... \\ v_n'\end{bmatrix}
+x(0)
+$$
+Performing the multiplication on the left we get each $\lambda_i$ multiplied by it's corresponding $e_i$.
+And performing the multiplication on the right we get $x(0)v_i'$
+$$ x(t) =
+\begin{bmatrix} e^{\lambda_1 t}e_1 & e^{\lambda_2 t}e_2 & ... & e^{\lambda_n t}e_n\end{bmatrix}
+\begin{bmatrix} v_1'x(0) \\ v_2'x(0) \\ ... \\ v_n'x(0)\end{bmatrix}
+$$
+Writing this product as a general sum we get the form we are expecting
+$$ x(t) = \sum_{i=1}^n v_i' x(0) e^{\lambda_i t} e_i $$
 
 \section*{Problem 3}
 The $A$ matrix in Problem 2 is given as
@@ -89,12 +121,192 @@ You will see the system is unstable.
 However, $x(t)$ will be bounded if the initial state vector is in the stable subspace.
 Describe the stable subspace of the system.
 \newline
-
+We must first diagonalize the $A$ matrix.
+Using Mathematica we find
+$$
+\begin{bmatrix}
+0 & 1 \\
+6 & -5 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+ -1 & 1 \\
+  6 & 1 \\
+\end{bmatrix}
+\begin{bmatrix}
+ -6 & 0 \\
+  0 & 1 \\
+\end{bmatrix}
+\begin{bmatrix}
+ -\frac{1}{7} & \frac{1}{7} \\
+  \frac{6}{7} & \frac{1}{7} \\
+\end{bmatrix}
+$$
+We showed in the last problem that the sum is equivalent to the matrix product
+$ Te^{\Lambda t}T^{-1} x(0)$
+With this we get
+$$
+x(t) =
+\begin{bmatrix}
+ -1 & 1 \\
+  6 & 1 \\
+\end{bmatrix}
+\begin{bmatrix}
+ e^{-6 t} & 0 \\
+  0 & e^t \\
+\end{bmatrix}
+\begin{bmatrix}
+ -\frac{1}{7} & \frac{1}{7} \\
+  \frac{6}{7} & \frac{1}{7} \\
+\end{bmatrix}
+\begin{bmatrix}
+x_1(0) \\
+x_2(0) \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+\left(\frac{6 e t}{7}+\frac{t}{7 e^6}\right) x_1(0)+\left(\frac{e t}{7}-\frac{t}{7 e^6}\right) x_2(0) \\
+\left(\frac{6 e t}{7}-\frac{6 t}{7 e^6}\right) x_1(0)+\left(\frac{e t}{7}+\frac{6 t}{7 e^6}\right) x_2(0) \\
+\end{bmatrix}
+$$
+The only way this remains bounded is if $x(t) = 0 \quad \forall t \in \mathbb{R}$.
+So we want to find the nullspace of the matrix
+$$
+t
+\begin{bmatrix}
+\left(\frac{6 e }{7}+\frac{1}{7 e^6}\right) & \left(\frac{e}{7}-\frac{1}{7 e^6}\right) \\
+\left(\frac{6 e }{7}-\frac{6}{7 e^6}\right) & \left(\frac{e}{7}+\frac{6}{7 e^6}\right) \\
+\end{bmatrix}
+\begin{bmatrix}
+x_1(0)
+x_2(0)
+\end{bmatrix}
+$$
+If this is invertible then there are two solutions and the null space only contains the zero vector.
+$$
+\begin{vmatrix}
+\left(\frac{6 e }{7}+\frac{1}{7 e^6}\right) & \left(\frac{e}{7}-\frac{1}{7 e^6}\right) \\
+\left(\frac{6 e }{7}-\frac{6}{7 e^6}\right) & \left(\frac{e}{7}+\frac{6}{7 e^6}\right) \\
+\end{vmatrix}
+=
+e^{-5}
+$$
+So the null space only contains the zero vectors.
+\newline
+The stable subspace of the system occurs when $x(0) = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$
 
 \section*{Problem 4}
 Find the realizations in controller and observability forms of the transfer function
 $$ H(s) = \frac{2s^3+13s^2+31s+32}{s^3+6s^2+11s+6} $$
 Give both block diagrams and state-space equations.
+\newline
+\newline
+The controllable form is given by the state equations
+$$
+A =
+\begin{bmatrix}
+ 0 &  1  &  0 \\
+ 0 &  0  &  1 \\
+-6 & -11 & -6 \\
+\end{bmatrix}
+\quad
+B =
+\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}
+\quad
+C =
+\begin{bmatrix}
+32 - 12 & 31 - 22 & 13 - 12 
+\end{bmatrix}
+\quad
+D =
+\begin{bmatrix}
+2
+\end{bmatrix}
+$$
+Reducing we get the following state space equation
+$$
+A =
+\begin{bmatrix}
+ 0 &  1  &  0 \\
+ 0 &  0  &  1 \\
+-6 & -11 & -6 \\
+\end{bmatrix}
+\quad
+B =
+\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}
+\quad
+C =
+\begin{bmatrix}
+20 & 9 & 1
+\end{bmatrix}
+\quad
+D =
+\begin{bmatrix}
+2
+\end{bmatrix}
+$$
+The block diagram is given by
+\begin{figure}[!htb]
+\centering
+\tikzset{
+    block/.style = {draw, fill=white, rectangle, minimum height=1em, minimum width=1em},
+    tmp/.style  = {coordinate}, 
+    sum/.style= {draw, fill=white, circle, node distance=1cm},
+    input/.style = {coordinate},
+    output/.style= {coordinate},
+    pinstyle/.style = {pin edge={to-,thin,black}}
+}
+\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+\node [input, name=input](input){};
+\node [sum, right of=input](inputSum){};
+\node [block, right of=inputSum](integrator1) {$\frac{1}{s}$};
+\node [block, right of=integrator1](integrator2) {$\frac{1}{s}$};
+\node [block, right of=integrator2](integrator3) {$\frac{1}{s}$};
+\node [block, right of=integrator3](b0) {$b_0$};
+\node [sum, right of=b0](finalSum) {};
+\node [output, right of=finalSum](output) {};
+\node [sum, above of=finalSum](b2pb1) {};
+\node [block, left of=b2pb1](b1) {$b_1$};
+\node [tmp, above of=b2pb1](aboveb2pb1) {};
+\node [block, left of=aboveb2pb1](b2) {$b_2$};
+\node [sum, below of=inputSum](a2pa1) {};
+\node [block, right of=a2pa1](a2) {$a_2$};
+\node [sum, below of=a2pa1](a1pa0) {};
+\node [block, right of=a1pa0](a1) {$a_1$};
+\node [tmp, below of=a1pa0](belowa1pa0) {};
+\node [block, right of=belowa1pa0](a0) {$a_0$};
+
+\draw [->] (input) -- node{$U(s)$} (inputSum) {};
+\draw [->] (inputSum) -- (integrator1) {};
+\draw [->] (a2pa1) --node{$-$} (inputSum) {};
+\draw [->] (a1pa0) -- (a2pa1) {};
+\draw [->] (a0) -| (a1pa0) {};
+\draw [->] (a1) -- (a1pa0) {};
+\draw [->] (a2) -- (a2pa1) {};
+
+\draw [->] (integrator1) --node[tmp, name=betweenInt1Int2]{} (integrator2) {};
+\draw [->] (betweenInt1Int2) |- (a2) {};
+\draw [->] (betweenInt1Int2) |- (b2) {};
+
+\draw [->] (integrator2) --node[tmp, name=betweenInt2Int3]{} (integrator3) {};
+\draw [->] (betweenInt2Int3) |- (a1) {};
+\draw [->] (betweenInt2Int3) |- (b1) {};
+
+\draw [->] (integrator3) --node[tmp, name=betweenInt3B0]{} (b0) {};
+\draw [->] (betweenInt3B0) |- (a0) {};
+\draw [->] (betweenInt3B0) |- (b0) {};
+
+\draw [->] (b2) -| (b2pb1) {};
+\draw [->] (b1) -- (b2pb1) {};
+
+\draw [->] (b2pb1) -- (finalSum) {};
+\draw [->] (b0) -- (finalSum) {};
+
+\draw [->] (finalSum) --node[name=outputLabel]{$Y(s)$} (output) {};
+\end{tikzpicture}
+\caption*{Controllable Canonical form}
+\end{figure}
+TODO: Observer Canonical form 
 
 
 \end{document}
