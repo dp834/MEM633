@@ -195,6 +195,7 @@ So the null space only contains the zero vectors.
 \newline
 The stable subspace of the system occurs when $x(0) = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$
 
+\newpage
 \section*{Problem 4}
 Find the realizations in controller and observability forms of the transfer function
 $$ H(s) = \frac{2s^3+13s^2+31s+32}{s^3+6s^2+11s+6} $$
@@ -215,7 +216,7 @@ B =
 \quad
 C =
 \begin{bmatrix}
-32 - 12 & 31 - 22 & 13 - 12 
+32 - 12 & 31 - 22 & 13 - 12
 \end{bmatrix}
 \quad
 D =
@@ -250,11 +251,11 @@ The block diagram is given by
 \centering
 \tikzset{
     block/.style = {draw, fill=white, rectangle, minimum height=1em, minimum width=1em},
-    tmp/.style  = {coordinate}, 
+    tmp/.style  = {coordinate, node distance=1cm},
     sum/.style= {draw, fill=white, circle, node distance=1cm},
-    input/.style = {coordinate},
-    output/.style= {coordinate},
-    pinstyle/.style = {pin edge={to-,thin,black}}
+    input/.style = {coordinate, node distance=1cm},
+    output/.style= {coordinate, node distance=1cm},
+    pinstyle/.style = {pin edge={to-,thin,black}},
 }
 \begin{tikzpicture}[auto, node distance=2cm,>=latex']
 \node [input, name=input](input){};
@@ -262,19 +263,20 @@ The block diagram is given by
 \node [block, right of=inputSum](integrator1) {$\frac{1}{s}$};
 \node [block, right of=integrator1](integrator2) {$\frac{1}{s}$};
 \node [block, right of=integrator2](integrator3) {$\frac{1}{s}$};
-\node [block, right of=integrator3](b0) {$b_0$};
+\node [block, right of=integrator3](b0) {$32$};
 \node [sum, right of=b0](finalSum) {};
-\node [output, right of=finalSum](output) {};
 \node [sum, above of=finalSum](b2pb1) {};
-\node [block, left of=b2pb1](b1) {$b_1$};
+\node [block, left of=b2pb1](b1) {$31$};
 \node [tmp, above of=b2pb1](aboveb2pb1) {};
-\node [block, left of=aboveb2pb1](b2) {$b_2$};
+\node [block, left of=aboveb2pb1](b2) {$13$};
 \node [sum, below of=inputSum](a2pa1) {};
-\node [block, right of=a2pa1](a2) {$a_2$};
+\node [block, right of=a2pa1](a2) {$6$};
 \node [sum, below of=a2pa1](a1pa0) {};
-\node [block, right of=a1pa0](a1) {$a_1$};
+\node [block, right of=a1pa0](a1) {$11$};
 \node [tmp, below of=a1pa0](belowa1pa0) {};
-\node [block, right of=belowa1pa0](a0) {$a_0$};
+\node [block, right of=belowa1pa0](a0) {$6$};
+\node [block, right of=finalSum](b3) {$2$};
+\node [output, right of=b3](output) {};
 
 \draw [->] (input) -- node{$U(s)$} (inputSum) {};
 \draw [->] (inputSum) -- (integrator1) {};
@@ -302,11 +304,118 @@ The block diagram is given by
 \draw [->] (b2pb1) -- (finalSum) {};
 \draw [->] (b0) -- (finalSum) {};
 
-\draw [->] (finalSum) --node[name=outputLabel]{$Y(s)$} (output) {};
+\draw [->] (finalSum) -- (b3) {};
+\draw [->] (b3) --node[name=outputLabel]{$Y(s)$} (output) {};
 \end{tikzpicture}
 \caption*{Controllable Canonical form}
 \end{figure}
-TODO: Observer Canonical form 
+\newline
+The observable form is given by the state equations
+$$
+A =
+\begin{bmatrix}
+-6  & 1 & 0 \\
+-11 & 0 & 1 \\
+-6  & 0 & 0 \\
+\end{bmatrix}
+\quad
+B =
+\begin{bmatrix}
+13 - 12 \\ 31 - 22 \\ 32 - 12
+\end{bmatrix}
+\quad
+C =
+\begin{bmatrix} 1 & 0 & 0 \end{bmatrix}
+\quad
+D =
+\begin{bmatrix}
+2
+\end{bmatrix}
+$$
+Reducing we get the following state space equation
+$$
+A =
+\begin{bmatrix}
+-6  & 1 & 0 \\
+-11 & 0 & 1 \\
+-6  & 0 & 0 \\
+\end{bmatrix}
+\quad
+B =
+\begin{bmatrix} 1 \\ 9 \\ 20 \end{bmatrix}
+\quad
+C =
+\begin{bmatrix}
+1 & 0 & 0
+\end{bmatrix}
+\quad
+D =
+\begin{bmatrix}
+2
+\end{bmatrix}
+$$
+The block diagram is given by
+\begin{figure}[!htb]
+\centering
+\tikzset{
+    block/.style = {draw, fill=white, rectangle, minimum height=1em, minimum width=1em},
+    tmp/.style  = {coordinate, node distance=1cm},
+    sum/.style= {draw, fill=white, circle, node distance=1cm},
+    input/.style = {coordinate, node distance=1cm},
+    output/.style= {coordinate, node distance=1cm},
+    pinstyle/.style = {pin edge={to-,thin,black}},
+}
+\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+\node [input, name=input, label=left:{$U(s)$}](input) {};
+\node [tmp, right of=input](betweenInputB0){};
+\node [block, right of=betweenInputB0](b0){$32$};
+\node [sum, right of=b0, label=south west:{$-$}](inputSum){};
+\node [block, right of=inputSum](integrator1) {$\frac{1}{s}$};
+\node [tmp, below of=integrator1](belowI1){};
+\node [tmp, below of=belowI1](belowI1x2){};
+\node [block, below of=belowI1x2](a0){$6$};
+\node [sum, right of=integrator1, label=south west:{$-$}](middleSum){};
+\node [block, right of=middleSum](integrator2) {$\frac{1}{s}$};
+\node [sum, right of=integrator2, label=south west:{$-$}](rightSum){};
+\node [block, right of=rightSum](integrator3) {$\frac{1}{s}$};
+\node [block, right of=integrator3](b3) {$2$};
+\node [output, right of=b3](output) {};
+\node [block, below of=integrator3](a2) {$6$};
+\node [tmp, below of=integrator2](belowI2){};
+\node [block, below of=belowI2](a1) {$11$};
+\node [tmp, above of=integrator2](aboveI2) {};
+\node [block, above of=aboveI2](b2) {$13$};
+\node [block, above of=integrator1](b1) {$31$};
+
+
+\draw [->] (input) -- (b0) {};
+\draw [->] (betweenInputB0) |- (b1) {};
+\draw [->] (betweenInputB0) |- (b2) {};
+\draw [->] (b0) -- (inputSum) {};
+\draw [->] (inputSum) -- (integrator1) {};
+\draw [->] (integrator1) -- (middleSum) {};
+\draw [->] (middleSum) -- (integrator2) {};
+\draw [->] (integrator2) -- (rightSum) {};
+\draw [->] (rightSum) -- (integrator3) {};
+\draw [->] (integrator3) --node[name=outputI3]{} (b3) {};
+\draw [->] (b3) --node[name=outputLabel]{$Y(s)$} (output) {};
+
+\draw [->] (outputI3) |- (a2) {};
+\draw [->] (a2) -| (rightSum) {};
+\draw [->] (b2) -| (rightSum) {};
+
+\draw [->] (outputI3) |- (a1) {};
+\draw [->] (a1) -| (middleSum) {};
+\draw [->] (b1) -| (middleSum) {};
+
+\draw [->] (outputI3) |- (a0) {};
+\draw [->] (a0) -| (inputSum) {};
+
+
+\end{tikzpicture}
+\caption*{Observable Canonical form}
+\end{figure}
+\newline
 
 
 \end{document}
