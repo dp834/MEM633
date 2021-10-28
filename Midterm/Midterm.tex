@@ -1,0 +1,207 @@
+\documentclass{article}
+
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+
+\author{Damien Prieur}
+\title{Midterm \\ MEM 633}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Problem 1}
+For the nonlinear cart-inverted pendulum system shown in page 11 of Chapter 1 notes, a linearized model at the upright stick equilibrium can be obtained as follows if both of the rotational and translational friction coefficients are negligible.
+$$
+\dot{x}(t) =
+\begin{bmatrix}
+0 & 1 & 0 & 0 \\
+25 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 \\
+-0.4 & 0 & 0 & 0 \\
+\end{bmatrix}
+x(t) +
+\begin{bmatrix}
+0 \\
+-1.4 \\
+0 \\
+0.6 \\
+\end{bmatrix}
+u(t)
+$$
+Assume the initial condition is
+$$
+x(0) =
+\begin{bmatrix}
+-0.3 \text{rad} \\
+0 \\
+0.2m \\
+0 \\
+\end{bmatrix}
+$$
+
+\begin{enumerate}[(a)]
+\item Is the system stable? Controllable? Explain.
+\newline
+\newline
+
+\item Let $u(t) = 0$. Solve for $x(t)$ and then plot it and comment on the initial state response.
+\newline
+\newline
+
+\item Now, use the state feedback $u(t) = Fx(t)$ with $F = \begin{bmatrix} 139 & 24 & 30 & 31 \end{bmatrix}$ to stabilize the system.
+Find the closed-loop pole locations of the closed-loop system to verify that all these poles are in the left half of the complex plane.
+\newline
+\newline
+
+\item Plot the displacement of the state variables $x_1(t)$ and $x_3(t)$ on the first graph, the velocity state variables $x_2(t)$ and $x_4(t)$ on the second graph, and the control input $u(t)$ on the third graph for the closed-loop system.
+\newline
+\newline
+
+\item Comment on the physical meaning of the three time response graphs in (d).
+\newline
+\newline
+
+\end{enumerate}
+
+\newpage
+\section*{Problem 2}
+Consider the following block diagram
+\begin{figure}[!htb]
+\centering
+\tikzset{
+    block/.style = {draw, fill=white, rectangle, minimum height=1em, minimum width=1em},
+    tmp/.style  = {coordinate, node distance=1cm},
+    sum/.style= {draw, fill=white, circle, node distance=1cm},
+    input/.style = {coordinate, node distance=1cm},
+    output/.style= {coordinate, node distance=2cm},
+    pinstyle/.style = {pin edge={to-,thin,black}},
+}
+\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+\node [input, name=input](input){};
+\node [block, right of=input](transferFunc){$G(s)$};
+\node [output, right of=transferFunc](output) {};
+
+\draw [->] (input) -- node[above]{$U(s)$} node[below]{$u(t)$} (transferFunc) {};
+\draw [->] (transferFunc) -- node[above]{$Y(s)$} node[below]{$y(t)$} (output) {};
+\end{tikzpicture}
+\end{figure}
+where $G(s)$ is given as
+$$ G(s) = \frac{s-2}{s(s^2+1)} $$
+\begin{enumerate}[(a)]
+\item Explain why the system is not BIBO stable based on the \textbf{definition} of BIBO stability, and find two bounded inputs that would cause the output to be unbounded.
+Plot the output due to these two inputs.
+\newline
+\newline
+
+\item Find a state-space representation in the controller canonical for for the system $G(s)$.
+\begin{align*}
+\dot{x}(t) &= Ax(t) + Bu(t) \\
+y(t) &= Cx(t) + Du(t)
+\end{align*}
+\newline
+
+\item Explain why the system is not internally stable based on the \textbf{definition} of internal stability.
+Plot the state response, $x(t)$, of the system with initial state $x(0) = \begin{bmatrix}2 & 0 & -2 \end{bmatrix}^T$ and zero input.
+\newline
+\newline
+
+\end{enumerate}
+
+\newpage
+\section*{Problem 3}
+Consider the following feedback control system.
+\begin{figure}[!htb]
+\centering
+\tikzset{
+    block/.style = {draw, fill=white, rectangle, minimum height=1em, minimum width=1em},
+    tmp/.style  = {coordinate, node distance=1cm},
+    sum/.style= {draw, fill=white, circle, node distance=1cm},
+    input/.style = {coordinate, node distance=1cm},
+    output/.style= {coordinate, node distance=2cm},
+    pinstyle/.style = {pin edge={to-,thin,black}},
+}
+\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+\node [input, name=input](input){};
+\node [sum, right of=input, label=south east:{$-$}](inputSum){};
+\node [block, right of=inputSum](controller){$K(s)$};
+\node [block, right of=controller](transferFunc){$G(s)$};
+\node [tmp, right of=transferFunc](tmpOutput) {};
+\node [output, right of=tmpOutput](output) {};
+\node [tmp, below of=transferFunc](belowTF) {};
+
+\draw [->] (input) -- node[above]{$R(s)$} node[below]{$r(t)$} (inputSum) {};
+\draw [->] (inputSum) --  (controller) {};
+\draw [->] (controller) -- (transferFunc) {};
+\draw [-] (transferFunc) -- (tmpOutput) {};
+\draw [->] (tmpOutput) -- node[above]{$Y(s)$} node[below]{$y(t)$} (output) {};
+\draw [-] (tmpOutput) |- (belowTF) {};
+\draw [->] (belowTF) -| (inputSum) {};
+\end{tikzpicture}
+\end{figure}
+Given
+$$G(s) = \frac{s-1}{s^2-2s}$$
+
+\begin{enumerate}[(a)]
+\item Find a controller $K(s)$ with the least order, which is either strictly proper or proper, so that the closed-loop system is BIBO stable.
+Hint: You can start from a zero-order controller $K_0(s) = b_0$. If it does not work, try a $1^{\text{st}}$-order controller $ K_1(s) = \frac{b_1 s + b_0}{s+a_0}$ or a $2^{\text{nd}}$-order controller $K_2(s) = \frac{b_2 s^2 + b_1 s + b_0}{s^2 + a_1 s + a_0}$.
+\newline
+\newline
+
+\item With the controller $K(s)$ you have just designed, determine the closed-loop transfer function $\frac{Y(s)}{R(s)}$.
+\newline
+\newline
+
+\item Assume zero initial conditions and the reference input $r(t)$ is a unit step function.
+Plot the output response $y(t)$ of the feedback control system you have just designed.
+\newline
+\newline
+
+\end{enumerate}
+
+\newpage
+\section*{Problem 4}
+Consider the system described by the following state equation,
+$$ \dot{x}(t) =
+\begin{bmatrix}
+-21 & -22 & -20 \\
+26 & 27 & 23 \\
+-9 & -9 & -7 \\
+\end{bmatrix}
+x(t) +
+\begin{bmatrix}
+-3 \\
+5 \\
+-2 \\
+\end{bmatrix}
+u(t)
+$$
+
+\begin{enumerate}[(a)]
+\item Use PBH Test to check if the system is controllable.
+\newline
+\newline
+
+\item Characterize the controllable subspace.
+\newline
+\newline
+
+\item If possible, design a state feedback controller so that the closed-loop system is internally stable.
+If not, explain the reason.
+\newline
+\newline
+
+\end{enumerate}
+
+\end{document}
