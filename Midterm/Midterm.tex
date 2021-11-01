@@ -13,6 +13,8 @@
 
 \usepackage{mathtools}
 \DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+
 
 \author{Damien Prieur}
 \title{Midterm \\ MEM 633}
@@ -55,23 +57,241 @@ $$
 \item Is the system stable? Controllable? Explain.
 \newline
 \newline
+A stable system has all eigenvalues in the left-half plane as it causes all the terms to exponentially decay due to the negative real part.
+Finding the characteristic polynomial by expanding the determinant along the fourth column gives us
+$$
+det(A-\lambda I) =
+\begin{vmatrix}
+-\lambda & 1 & 0 & 0 \\
+25 & -\lambda & 0 & 0 \\
+0 & 0 & -\lambda & 1 \\
+-0.4 & 0 & 0 & -\lambda \\
+\end{vmatrix}
+=
+\lambda^4 - 25\lambda^2
+=0
+$$
+Solving this give us
+$$ \lambda^4 = 25\lambda^2 $$
+$$ \lambda^2 = 25 $$
+$$ \lambda = \pm 5 $$
+One trivial solution is $0$ which is repeated twice and $\pm 5$.
+Since we have eigenvalues that are $\ge 0$ for the real component the system is unstable as we expect.
+\newline
+To determine controllability we can look at the controllability matrix given by
+$$ \mathcal{C} = \begin{bmatrix} B & AB & A^2B & A^3B \end{bmatrix}$$
+If the matrix is full rank the system is controllable since the input can have decoupled control over all state space variables.
+Using Mathematica to compute these matrix multiplications we get
+$$ \mathcal{C} =
+\begin{bmatrix}
+   0 & -1.4 & 0 & -35 \\
+-1.4 & 0 & -35 & 0 \\
+   0 & 0.6 & 0 & 0.56 \\
+ 0.6 & 0 & 0.56 & 0 \\
+\end{bmatrix}
+$$
+A matrix is full rank if the determinant is nonzero, so computing the determinant we get
+$$ rank(\mathcal{C}) =
+\begin{vmatrix}
+   0 & -1.4 & 0 & -35 \\
+-1.4 & 0 & -35 & 0 \\
+   0 & 0.6 & 0 & 0.56 \\
+ 0.6 & 0 & 0.56 & 0 \\
+\end{vmatrix}
+=
+408.687
+$$
+Since it's nonzero the controllability matrix is full rank. Therefore the system is controllable.
 
 \item Let $u(t) = 0$. Solve for $x(t)$ and then plot it and comment on the initial state response.
 \newline
 \newline
+Since the system is a linear system the solution to $x(t)$ is
+$$ x(t) = e^{A t} x(t_0) + \int_0^t \Phi(t,\tau)B(\tau)u(\tau)d\tau $$
+Since the input is $0$ we just need the first term
+$$ x(t) = e^{A t} x(t_0) $$
+So first we must compute $e^{A t}$.
+Since we have a repeated eigenvalue $0$ the best we can do for digitalization is Jordan decomposition.
+We have the jordan blocks as
+$$
+J=
+\begin{bmatrix}
+-5& 0 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 5 \\
+\end{bmatrix}
+$$
+The corresponding generalized eigenvectors computed with Mathematica give
+$$
+S
+\begin{bmatrix}
+0.196 & 0 & 0 & -0.196 \\
+-0.980 & 0 & 0 & -0.980 \\
+-0.00314 & 1 & 0 & 0.00314 \\
+0.0157 & 0 & 1 & 0.0157 \\
+\end{bmatrix}
+$$
+Since we now have $A = SJS^{-1}$ we can find the matrix exponential by computing $e^{A t} = Se^{J t}S^{-1}$ which is easy to compute since $J$ is block diagonal.
+$$
+e^{J t} =
+\begin{bmatrix}
+e^{-5 t} & 0 & 0 & 0 \\
+0 & e^{0t} & te^{0} & 0 \\
+0 & 0 & e^{0 t} & 0 \\
+0 & 0 & 0 & e^{5 t} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+e^{-5 t} & 0 & 0 & 0 \\
+0 & 1 & t & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & e^{5 t} \\
+\end{bmatrix}
+$$
+Now computing $e^{A t} = S e^{J t} S^{-1}$ in Mathematica we get
+$$
+e^{A t} =
+\begin{bmatrix}
+0.5 e^{-5. t}+0.5 e^{5. t} & 0.1 e^{5. t}-0.1 e^{-5. t} & 0 & 0 \\
+2.5 e^{5. t}-2.5 e^{-5. t} & 0.5 e^{-5. t}+0.5 e^{5. t} & 0 & 0 \\
+0.016\, -0.008 e^{-5. t}-0.008 e^{5. t} & 0.016 t+0.0016 e^{-5. t}-0.0016 e^{5. t} & 1 & t \\
+0.04 e^{-5. t}-0.04 e^{5. t} & 0.016\, -0.008 e^{-5. t}-0.008 e^{5. t} & 0 & 1 \\
+\end{bmatrix}
+$$
+Now to solve for $x(t)$ we have
+$$
+x(t) =
+\begin{bmatrix}
+0.5 e^{-5. t}+0.5 e^{5. t} & 0.1 e^{5. t}-0.1 e^{-5. t} & 0 & 0 \\
+2.5 e^{5. t}-2.5 e^{-5. t} & 0.5 e^{-5. t}+0.5 e^{5. t} & 0 & 0 \\
+0.016\, -0.008 e^{-5. t}-0.008 e^{5. t} & 0.016 t+0.0016 e^{-5. t}-0.0016 e^{5. t} & 1 & t \\
+0.04 e^{-5. t}-0.04 e^{5. t} & 0.016\, -0.008 e^{-5. t}-0.008 e^{5. t} & 0 & 1 \\
+\end{bmatrix}
+\begin{bmatrix}
+-0.3 \text{rad} \\
+0 \\
+0.2m \\
+0 \\
+\end{bmatrix}
+$$
+Which gives us
+$$
+\begin{bmatrix}
+x_1(t) \\
+x_2(t) \\
+x_3(t) \\
+x_4(t) \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+e^{-5. t} \left(-0.15 e^{10. t}-0.15\right) \\
+e^{-5. t} \left(0.75\, -0.75 e^{10. t}\right) \\
+0.1952 + 0.0024 e^{-5. t}+0.0024 e^{5. t} \\
+e^{-5. t} \left(0.012 e^{10. t}-0.012\right) \\
+\end{bmatrix}
+$$
+\newpage
+Plotting the response we get
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.75]{{images/p1_zero_input_response}.png}
+\end{figure}
+\newline
+We can see that the system is unstable in all states.
+This is only to $.2$ seconds as going further out quickly becomes a runaway state going to large orders of magnitude after leaving the linearized region.
+The angle of the pendulum falls rapidly away from the vertical equilibrium increasing it's angular velocity which pushes the cart in the positive $x$ direction gaining speed.
+This system is clearly not stable on it's own.
 
 \item Now, use the state feedback $u(t) = Fx(t)$ with $F = \begin{bmatrix} 139 & 24 & 30 & 31 \end{bmatrix}$ to stabilize the system.
 Find the closed-loop pole locations of the closed-loop system to verify that all these poles are in the left half of the complex plane.
 \newline
 \newline
+Our system has the form $\dot{x} = Ax +Bu$ substituting in our feedback control we get our system as
+$$\dot{x} = Ax + BFx = (A+BF)x$$
+To check the stability we need to look at the eigenvalues of the new matrix $A+BF$.
+\begin{align*}
+A + BF &=
+\left(
+\begin{bmatrix}
+0 & 1 & 0 & 0 \\
+25 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 \\
+-0.4 & 0 & 0 & 0 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+0 \\
+-1.4 \\
+0 \\
+0.6 \\
+\end{bmatrix}
+\begin{bmatrix} 139 & 24 & 30 & 31 \end{bmatrix}
+\right)
+x(t) \\
+A + BF &=
+\left(
+\begin{bmatrix}
+0 & 1 & 0 & 0 \\
+25 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 \\
+-0.4 & 0 & 0 & 0 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+0 & 0 & 0 & 0 \\
+-194.6 & -33.6 & -42 & -43.4 \\
+0 & 0 & 0 & 0 \\
+83.4 & 14.4 & 18 & 18.6 \\
+\end{bmatrix}
+\right)
+x(t) \\
+A + BF &=
+\begin{bmatrix}
+0 & 1. & 0 & 0 \\
+-169.6 & -33.6 & -42 & -43.4 \\
+0 & 0 & 0 & 1 \\
+83 & 14.4 & 18 & 18.6 \\
+\end{bmatrix}
+x(t)
+\end{align*}
+Finding the eigenvalues of the matrix
+$$
+\begin{vmatrix}
+\lambda & -1. & 0 & 0 \\
+169.6 & \lambda+33.6 & 42 & 43.4 \\
+0 & 0 & \lambda & -1 \\
+-83 & -14.4 & -18 & \lambda -18.6 \\
+\end{vmatrix}
+= x^4 + 15 x^3 + x^2 + 447.64 x + 433.2 = 0
+$$
+Using Mathematica to solve the quartic polynomial we get the eigenvalues as
+$$
+\lambda_1 = -5.582 - 8.572i \quad \lambda_2 = -5.582 + 8.572i
+\quad
+\lambda_3 = -1.918 - 0.679i \quad \lambda_4 = -1.918 + 0.679i
+$$
+Which does have all eigenvalues in the left half plane, so the controlled system is stable.
 
 \item Plot the displacement of the state variables $x_1(t)$ and $x_3(t)$ on the first graph, the velocity state variables $x_2(t)$ and $x_4(t)$ on the second graph, and the control input $u(t)$ on the third graph for the closed-loop system.
 \newline
 \newline
+Using mathematica to plot $x(t) = e^{At}x_0$ and $u(t) = Fe^{At}x_0$ we get
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.5]{{images/p1_controlled_response}.png}
+\end{figure}
 
 \item Comment on the physical meaning of the three time response graphs in (d).
 \newline
 \newline
+Assuming that positive displacement is to the right, positive rotation is clockwise, and positive input is force applied to the right.
+We can see that the cart needs a large push to the left to stop the pendulum from falling over.
+There is a point where the state variables are almost at the origin just from this initial push to the left, but now the system has a lot of energy in it $x_2,x_4$.
+So the system needs to dissipate the energy by overshooting the equilibrium point for $x_1,x_3$ with the pendulum in a position where it is leaning in the direction the cart is moving.
+During this the cart begins to slow down and move back towards the origin.
+The overshoot we see in the state variables is required to dissipate the energy gained when getting the pendulum in a more stable position.
+Once the energies have been dissipated the cart has passed the equilibrium so it moves very slowly back so that there is no more energy buildup.
 
 \end{enumerate}
 
@@ -104,18 +324,143 @@ $$ G(s) = \frac{s-2}{s(s^2+1)} $$
 Plot the output due to these two inputs.
 \newline
 \newline
+A system is BIBO stable if $\int_{-\infty}^{\infty} \abs{h(t)}dt < B$ for some constant $B$ where $h(t)$ is the impulse response.
+So if we compute $h(t)$ and show it's not absolutely integrable the system is not BIBO stable.
+Taking the inverse Laplace transform of $G(s)$ gives us the impulse response.
+\begin{align*}
+G(s) &= \frac{s-2}{s(s^2+1)} \\
+&= \frac{1}{s^2+1} - \frac{2}{s(s^2+1)} \\
+\mathcal{L}^{-1}\{G(s)\} &= 2 \cos{t} + \sin{t} -2
+\end{align*}
+The $\cos$ and $\sin$ terms will be bounded due to their cyclic nature.
+We can see that this is integral is not bounded due to the constant term that will go to infinity.
+Therefore the system is not BIBO stable.
+\newline
+A step response has a Laplace transform of $\frac{1}{s}$
+\begin{align*}
+x_{\text{step}}(t) &= \mathcal{L}^{-1}\{G(s) \frac{1}{s}\} \\
+ &= \mathcal{L}^{-1}\{ \frac{s-2}{s^2(s^2+1)} \} \\
+ &= \mathcal{L}^{-1}\{ \frac{1}{s^2+1} - \frac{2}{s^2(s^2+1)} \} \\
+ &= 2 \sin{t} - \cos{t} -2t + 1 \\
+\end{align*}
+Which is clearly unbounded as $ \lim_{x \to \infty}x(t) = -\infty $ due to the $-2t$ term.
+\newline
+A sinusoidal response has a Laplace transform of $\frac{1}{s^2+1}$
+\begin{align*}
+x_{\text{step}}(t) &= \mathcal{L}^{-1}\{G(s) \frac{1}{s^2+1}\} \\
+ &= \mathcal{L}^{-1}\{ \frac{s-2}{s(s^2+1)^2} \} \\
+ &= \mathcal{L}^{-1}\{ \frac{1}{(s^2+1)^2} - \frac{2}{s(s^2+1)^2} \} \\
+ &= \sin{(t)}(\frac{1}{2} + t)-\cos{(t)}(\frac{1}{2}t -2) - 2 \\
+ &= \frac{1}{2}(\sin{t} + 4\cos{t} -4) + \frac{1}{2}t(-\cos{t} +2\sin{t})
+\end{align*}
+Which is clearly unbounded as $ \lim_{x \to \infty}x(t) $ oscillates growing larger and larger due to the $\frac{1}{2}t(-\cos{t} +2\sin{t})$ term.
+\newpage
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.5]{{images/p2_2_unbouded_responses}.png}
+\caption*{2 Responses that are unbounded from bounded inputs}
+\end{figure}
 
-\item Find a state-space representation in the controller canonical for for the system $G(s)$.
+\item Find a state-space representation in the controller canonical form for the system $G(s)$.
 \begin{align*}
 \dot{x}(t) &= Ax(t) + Bu(t) \\
 y(t) &= Cx(t) + Du(t)
 \end{align*}
 \newline
+Following the formula in the notes for the controller canonical form we get the state space representation as
+\begin{align*}
+\dot{x}(t)
+&=
+\begin{bmatrix}
+0 &  1 & 0 \\
+0 &  0 & 1 \\
+0 & -1 & 0 \\
+\end{bmatrix}
+x(t)
++
+\begin{bmatrix}
+0 \\
+0 \\
+1 \\
+\end{bmatrix}
+u(t)
+\\
+y(t)
+&=
+\begin{bmatrix}
+-2 \\
+ 1 \\
+ 0 \\
+\end{bmatrix}
+x(t)
++
+\begin{bmatrix}
+0
+\end{bmatrix}
+u(t)
+\end{align*}
+With nothing interesting happening in the $C$ matrix as $b_0 = 0$
+
 
 \item Explain why the system is not internally stable based on the \textbf{definition} of internal stability.
 Plot the state response, $x(t)$, of the system with initial state $x(0) = \begin{bmatrix}2 & 0 & -2 \end{bmatrix}^T$ and zero input.
 \newline
 \newline
+By the definition of internal stability we mush show that $\dot{x}(t) = Ax(t)$ \textit{always} tends towards zero as $t \to \infty$.
+So to show that it's not internally stable we just need to show that for some, or all, inputs we don't tend towards zero.
+As in problem 1 the solution to this equation is just $x(t) = e^{A t}$.
+The eigenvalues for this system are $\pm i, 0$, since non are repeated we can diagonalize the system.
+Using $e^{A t} = Pe^{Dt}P^{-1}$ we get
+$$
+P =
+\begin{bmatrix}
+-1 & -1 & 1 \\
+-i & i & 0 \\
+1 & 1 & 0 \\
+\end{bmatrix}
+\quad
+D =
+\begin{bmatrix}
+i & 0 & 0 \\
+0 & i & 0 \\
+0 & 0 & 0 \\
+\end{bmatrix}
+\implies
+e^{A t} =
+\begin{bmatrix}
+1 & \sin{t} & 1-\cos{t} \\
+0 & \cos{t} & \sin{t} \\
+0 & -\sin{t} & \cos{t} \\
+\end{bmatrix}
+$$
+Multiplying this by any matrix we get that all of our internal states are some combination of sinusoids.
+Due to this the internal states will never stop oscillating.
+Therefore the system is internally unstable.
+$$
+\begin{bmatrix}
+1 & \sin{t} & 1-\cos{t} \\
+0 & \cos{t} & \sin{t} \\
+0 & -\sin{t} & \cos{t} \\
+\end{bmatrix}
+\begin{bmatrix}
+2 \\
+0 \\
+-2 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+2\cos{t} \\
+-2\sin{t} \\
+-2\cos{t} \\
+\end{bmatrix}
+$$
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.4]{{images/p2_zero_impulse_response}.png}
+\end{figure}
+
+
+
 
 \end{enumerate}
 
