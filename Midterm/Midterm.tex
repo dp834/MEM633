@@ -459,9 +459,6 @@ $$
 \includegraphics[scale=.4]{{images/p2_zero_impulse_response}.png}
 \end{figure}
 
-
-
-
 \end{enumerate}
 
 \newpage
@@ -503,15 +500,49 @@ $$G(s) = \frac{s-1}{s^2-2s}$$
 Hint: You can start from a zero-order controller $K_0(s) = b_0$. If it does not work, try a $1^{\text{st}}$-order controller $ K_1(s) = \frac{b_1 s + b_0}{s+a_0}$ or a $2^{\text{nd}}$-order controller $K_2(s) = \frac{b_2 s^2 + b_1 s + b_0}{s^2 + a_1 s + a_0}$.
 \newline
 \newline
+Assuming that we have a perfect model we can perform pole cancellation exactly.
+We need to remove both poles since they are $0$ and $2$ which are not strictly negative.
+\newline
+Using the second order controller since we need to cancel 2 poles
+$$ K(s) = \frac{s^2-2s}{(s+1)(s+3)} = \frac{s^2-2s}{s^2+4s+3} $$
+
+Computing this here cause we will use it later
+$$ K(s) G(s) = \frac{(s-1)}{(s+1)(s+3)} $$
 
 \item With the controller $K(s)$ you have just designed, determine the closed-loop transfer function $\frac{Y(s)}{R(s)}$.
 \newline
 \newline
+Let $Z(s) = R(s) - Y(s)$. Then we have $Z(s) K(s) G(s) = Y(s)$.
+Substituting we get
+\begin{align*}
+Y(s) &= (R(s) - Y(s))K(s) G(s) \\
+Y(s) &= R(s)K(s) G(s) - Y(s)K(s) G(s) \\
+Y(s) + Y(s)K(s) G(s)  &= R(s)K(s) G(s) \\
+Y(s)(1 + K(s) G(s))  &= R(s)K(s) G(s) \\
+\frac{Y(s)}{R(s)}  &= \frac{K(s) G(s)}{1 + K(s) G(s)} \\
+\end{align*}
+Plugging in our values we get
+$$ \frac{Y(s)}{R(s)} = \frac{\frac{(s-1)}{(s+1)(s+3)}}{1 + \frac{(s-1)}{(s+1)(s+3)}} $$
+Using Mathematica to simplify we find
+$$ \frac{Y(s)}{R(s)} = \frac{s-1}{s^2+5s + 2} $$
+Which has poles
+$$ \frac{1}{2}(-5 \pm \sqrt{17}) $$
 
 \item Assume zero initial conditions and the reference input $r(t)$ is a unit step function.
 Plot the output response $y(t)$ of the feedback control system you have just designed.
 \newline
 \newline
+A unit step is $\frac{1}{s}$ in the Laplace domain.
+$$ Y_{\text{step}}(s) = \frac{s-1}{s^2+5s + 2} \frac{1}{s} $$
+$$ Y_{\text{step}}(s) = \frac{s-1}{s(s^2+5s + 2)} $$
+$$ Y_{\text{step}}(s) = \frac{s-1}{s(s^2+5s + 2)} $$
+$$ Y_{\text{step}}(s) = \frac{1}{s^2 + 5s + 2} - \frac{1}{s(s^2+5s+2)} $$
+$$ y_{\text{step}}(t) = \frac{1}{68} e^{-\frac{1}{2} \left(5+\sqrt{17}\right) t} \left(\left(17+9 \sqrt{17}\right) e^{\sqrt{17} t}-34e^{\frac{1}{2} \left(5+\sqrt{17}\right) t}+17-9 \sqrt{17}\right) $$
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.5]{{images/p3_step_response}.png}
+\end{figure}
 
 \end{enumerate}
 
@@ -537,10 +568,62 @@ $$
 \item Use PBH Test to check if the system is controllable.
 \newline
 \newline
+A system is controllable if the $rank\left(\begin{bmatrix} sI - A & b \end{bmatrix}\right) = n \quad \forall s \in \mathcal{C}$
+$$
+\begin{bmatrix}
+s + 21 & 22 & 20 & -3 \\
+-26 & s - 27 & -23 & 5 \\
+9 & 9 & s + 7  & -2 \\
+\end{bmatrix}
+$$
+If the $rank\left(A\right) = n$ then the only times when the first entry $sI -A$ will not have $rank = n$ will be when $s$ is equal to an eigenvalue.
+So if we check that the determinant of $A$ is nonzero we know $A$ is of full rank.
+Then we need to find the eigenvalues and test the matrix above letting $s = \lambda_i \quad i \in \{1, ... n\}$
+$$
+\begin{vmatrix}
+\lambda + 21 & 22 & 20 \\
+-26 & \lambda - 27 & -23 \\
+9 & 9 & \lambda + 7 \\
+\end{vmatrix}
+= -\lambda^3 - \lambda^2 + 10\lambda -8
+$$
+Since this isn't always zero we the $A$ matrix is full rank and we can proceed with finding the eigenvalues.
+$$ \lambda_1 = -4 \quad \lambda_2 = 2 \quad \lambda_3 = 1 $$
+Plugging in each eigenvalue we can check if the matrix is still rank 3
+$$
+\begin{bmatrix}
+-4 + 21 & 22 & 20 & -3 \\
+-26 & -4 - 27 & -23 & 5 \\
+9 & 9 & -4 + 7  & -2 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+17 & 22 & 20 & -3 \\
+-26 & -23 & -23 & 5 \\
+9 & 9 & 3  & -2 \\
+\end{bmatrix}
+$$
+Performing row reduction in Mathematica we get
+$$
+\begin{bmatrix}
+1 & 0 & -\frac{38}{15} & -\frac{17}{45} \\
+0 & 1 &  \frac{43}{15} &  \frac{7}{45} \\
+0 & 0 & 0 & 0 \\
+\end{bmatrix}
+$$
+Which shows that the matrix has rank 2.
+So by the PBH this system is uncontrollable.
+\newline
+\newline
+By the same process we can check the other eigenvalues
+$$ rank(s=2) = 3 \quad rank(s=1) = 3 $$
 
 \item Characterize the controllable subspace.
 \newline
 \newline
+The pbh test told us that the eigenvalue $\lambda = -4$ is uncontrollable which tells us that in the direction of that eigenvector we have no control.
+Since the other eigenvalues had full rank we are controllable in their directions.
+If we are non-controllable in 1 dimension while in $\mathcal{R}^3$ then the controllable subspace is in the plane which contains the eigenvectors corresponding to the eigenvalues $\lambda = 1$ and $\lambda = 2$.
 
 \item If possible, design a state feedback controller so that the closed-loop system is internally stable.
 If not, explain the reason.
