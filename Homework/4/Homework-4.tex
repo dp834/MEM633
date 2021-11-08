@@ -1,0 +1,183 @@
+\documentclass{article}
+
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+
+\author{Anthony Siddique, Damien Prieur, Jachin Philip, Obinna Ekeh}
+\title{Homework 4\\ MEM 633 \\ Group 1}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+Consider the system described by the following state equaiton,
+$$
+\dot{x}(t) = Ax(t) + Bu(t) =
+\begin{bmatrix}
+-18 & -19 & -15 \\
+20 & 21 & 16 \\
+-5 & -5 & -4 \\
+\end{bmatrix}
+x(t)
++
+\begin{bmatrix}
+-3 \\
+ 5 \\ 
+-2 \\
+\end{bmatrix}
+u(t)
+$$
+
+\begin{enumerate}[(a)]
+\item Use the PBH Test to check if the system is controllable.
+\newline
+\newline
+A system is controllable if the $rank\left(\begin{bmatrix} sI - A & b \end{bmatrix}\right) = n \quad \forall s \in \mathcal{C}$
+$$
+\begin{bmatrix}
+s + 18 & 19   &  15 & -3 \\
+   -20 & s-21 & -16 &  5 \\
+     5 & 5    & s+4 & -2 \\
+\end{bmatrix}
+$$
+Since we only need to check $s$ equal to the eigenvalues of $A$ since $A$ is nonsingular.
+$$
+\begin{vmatrix}
+\lambda + 18 & 19   &  15 \\
+   -20 & \lambda-21 & -16 \\
+     5 & 5    & \lambda+4 \\
+\end{vmatrix}
+=
+-\lambda^3 - \lambda^2 +5 \lambda -3
+$$
+$$
+\lambda_1 = -3
+\quad
+\lambda_2 =  1
+\quad 
+\lambda_3 =  1
+$$
+
+Plugging in $s=\lambda_i$ for the PBH test we get
+$$
+rank(s=-3) =
+rank\left(
+\begin{bmatrix}
+ 15 &  19 &  15 & -3 \\
+-20 & -24 & -16 &  5 \\
+  5 &   5 &   1 & -2 \\
+\end{bmatrix}
+\right) = 2
+$$
+$$
+rank(s=1) =
+rank\left(
+\begin{bmatrix}
+ 19 &  19 &  15 & -3 \\
+-20 & -20 & -16 &  5 \\
+  5 &   5 &   5 & -2 \\
+\end{bmatrix}
+\right) = 3
+$$
+The system is uncontrollable, and the only uncontrollable eigenvalue is $\lambda = -3$.
+
+
+\item Characterize the controllable subpace using the controllability decomposition approach.
+\newline
+\newline
+TODO
+
+
+\item Is the system stabilizable? Explain.
+\newline
+\newline
+Yes, since the only uncontrollable eigenvalue is already stable since it's in the left half plane.
+
+\item Design a state feedback controller using the controllability decomposition approach so that the closed-loop system is internally stable.
+\newline
+\newline
+
+\item Assume the initial state of the system is $x(0) = \begin{bmatrix} 1 & 3 & 2\end{bmatrix}^T$, plot the state response $x(t)$ of the closed-loop system.
+\newline
+\newline
+
+\end{enumerate}
+
+\section*{Problem 2}
+Consider the same system described by the state equation shown in problem 1.
+$$
+\dot{x}(t) = Ax(t) + Bu(t) =
+\begin{bmatrix}
+-18 & -19 & -15 \\
+20 & 21 & 16 \\
+-5 & -5 & -4 \\
+\end{bmatrix}
+x(t)
++
+\begin{bmatrix}
+-3 \\
+ 5 \\ 
+-2 \\
+\end{bmatrix}
+u(t)
+$$
+
+\begin{enumerate}[(a)]
+\item Find a similarity transformation to transform the state equation to one with a diagonal $A$ matrix.
+\newline
+\newline
+
+\item Characterize the controllable subspace using the eigenvectors obtained in problem 2(a).
+\newline
+\newline
+
+\item Check the stabilizability of the system based on the result of problem 2(b).
+\newline
+\newline
+
+\item Design a state feedback controller using the eigen structure obtained in problem 2(b) so that the closed-loop system is internally stable.
+\newline
+\newline
+
+\item Assume the initial state of the system is $x(0) = \begin{bmatrix} 1 & 3 & 2\end{bmatrix}^T$, plot the state response $x(t)$ of the closed-loop system.
+\newline
+\newline
+
+\end{enumerate}
+
+
+\section*{Problem 3}
+\begin{enumerate}[(a)]
+\item If $\{A, b, c, d\}, d \neq 0$, is a realization with $H(s) = c(sI-A)^{-1}b +d$, show that
+$$ \left\{ A - \frac{bc}{d}, \frac{b}{d}, \frac{-c}{d}, \frac{1}{d} \right\} $$
+is a realization for a system with a transfer function $\frac{1}{H(s)}$.
+\newline
+\newline
+Let the system $G(s) = \frac{1}{H(s)}$ be described by $\{\hat{A}, \hat{b}, \hat{c}, \hat{d}\}$.
+Its transfer function is given by
+$$
+G(s) = \hat{c}(sI-\hat{A})^{-1}\hat{b}+\hat{d}
+$$
+If we expand this and show that $G(s) = \frac{1}{H(s)}$ then the statement is true.
+$$\frac{-c}{d} (sI - (A - \frac{bc}{d}))\frac{b}{d} + \frac{1}{d}$$
+
+\item If we are given $\{A, b, c, d\}, d \neq 0$, show that the zeros of $c(sI-A)^{-1}b + d$ are the eigenvalues of the matrix $ A - \frac{bc}{d}$.
+\newline
+\newline
+
+\end{enumerate}
+
+\end{document}
