@@ -1,0 +1,496 @@
+\documentclass{article}
+
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+
+\author{Anthony Siddique, Damien Prieur, Jachin Philip, Obinna Ekeh}
+\title{Homework 4\\ MEM 633 \\ Group 1}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+Consider the system described by the following state equaiton,
+$$
+\dot{x}(t) = Ax(t) + Bu(t) =
+\begin{bmatrix}
+-18 & -19 & -15 \\
+20 & 21 & 16 \\
+-5 & -5 & -4 \\
+\end{bmatrix}
+x(t)
++
+\begin{bmatrix}
+-3 \\
+ 5 \\
+-2 \\
+\end{bmatrix}
+u(t)
+$$
+
+\begin{enumerate}[(a)]
+\item Use the PBH Test to check if the system is controllable.
+\newline
+\newline
+A system is controllable if the $rank\left(\begin{bmatrix} sI - A & b \end{bmatrix}\right) = n \quad \forall s \in \mathcal{C}$
+$$
+\begin{bmatrix}
+s + 18 & 19   &  15 & -3 \\
+   -20 & s-21 & -16 &  5 \\
+     5 & 5    & s+4 & -2 \\
+\end{bmatrix}
+$$
+Since we only need to check $s$ equal to the eigenvalues of $A$ since $A$ is nonsingular.
+$$
+\begin{vmatrix}
+\lambda + 18 & 19   &  15 \\
+   -20 & \lambda-21 & -16 \\
+     5 & 5    & \lambda+4 \\
+\end{vmatrix}
+=
+-\lambda^3 - \lambda^2 +5 \lambda -3
+$$
+$$
+\lambda_1 = -3
+\quad
+\lambda_2 =  1
+\quad
+\lambda_3 =  1
+$$
+
+Plugging in $s=\lambda_i$ for the PBH test we get
+$$
+rank(s=-3) =
+rank\left(
+\begin{bmatrix}
+ 15 &  19 &  15 & -3 \\
+-20 & -24 & -16 &  5 \\
+  5 &   5 &   1 & -2 \\
+\end{bmatrix}
+\right) = 2
+$$
+$$
+rank(s=1) =
+rank\left(
+\begin{bmatrix}
+ 19 &  19 &  15 & -3 \\
+-20 & -20 & -16 &  5 \\
+  5 &   5 &   5 & -2 \\
+\end{bmatrix}
+\right) = 3
+$$
+The system is uncontrollable, and the only uncontrollable eigenvalue is $\lambda = -3$.
+
+
+\item Characterize the controllable subpace using the controllability decomposition approach.
+\newline
+\newline
+Let $T = \begin{bmatrix} T_1 & T_2 \end{bmatrix}$, where $T_1 = \begin{bmatrix} b & Ab & ... & A^{r-1}b \end{bmatrix}$ and $T_2$ be chosen such that $T$ is full rank.
+Since we know that only 2 eigenvalues are controllable we only need the first two columns of $T_1$
+$$ T_1 = \begin{bmatrix} b & Ab \end{bmatrix}
+=
+\begin{bmatrix}
+-3 & -11 \\
+5 & 13 \\
+-2 & -2 \\
+\end{bmatrix}
+$$
+$$ T_2 = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} $$
+$$
+T =
+\begin{bmatrix}
+-3 & -11 & 0 \\
+ 5 &  13 & 0 \\
+-2 &  -2 & 1 \\
+\end{bmatrix}
+\implies T^{-1} =
+\frac{1}{16}
+\begin{bmatrix}
+13 & 11 &  0 \\
+-5 & -3 &  0 \\
+16 & 16 & 16 \\
+\end{bmatrix}
+$$
+Let $\hat{A} = T^{-1}AT, \hat{b} = T^{-1}b$ then we get
+$$
+\hat{A} =
+\begin{bmatrix}
+0 & -1 & -\frac{19}{16} \\
+1 &  2 &  \frac{27}{16} \\
+0 &  0 & -3 \\
+\end{bmatrix}
+\quad
+\hat{b} = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}
+$$
+
+\item Is the system stabilizable? Explain.
+\newline
+\newline
+Yes, since the only uncontrollable eigenvalue is already stable since it's in the left half plane.
+
+\item Design a state feedback controller using the controllability decomposition approach so that the closed-loop system is internally stable.
+\newline
+\newline
+Looking at the controllable subsystem given by the first $2x2$ subsystem we have
+$$
+A =
+\begin{bmatrix}
+0 & -1 \\
+1 &  2 \\
+\end{bmatrix}
+\quad
+B =
+\begin{bmatrix}
+1 \\
+0 \\
+\end{bmatrix}
+$$
+The $A$ matrix has eigenvalues $\lambda_1 = 1, \lambda_2 = 1$ as we expect.
+To control this system we can use pole placement to move the eigenvalues somewhere in the left half plane.
+Let those poles be $\{-5, -7\}$
+$$ det(\lambda I - (A-bF)) = (\lambda+5)(\lambda+7) $$
+$$
+\begin{vmatrix}
+\lambda + f_1 & \lambda + 1 + 2f_2 \\
+-1 & \lambda - 2 \\
+\end{vmatrix}
+= (\lambda+5)(\lambda+7)
+$$
+$$
+\lambda^2 + \lambda(f_1 - 2) + 1 -2f_1 +f_2
+= \lambda^2 + 12 \lambda +35
+$$
+$$ f_1 = 14 \quad f_2 = 62 $$
+Putting this into the larger system we get $u=-Fx$
+$$
+\begin{bmatrix}
+0 & -1 & -\frac{19}{16} \\
+1 &  2 &  \frac{27}{16} \\
+0 &  0 & -3 \\
+\end{bmatrix}
+\hat{x}(t)
+-
+\begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}
+\begin{bmatrix}14 & 62 & 0 \end{bmatrix}
+=
+\begin{bmatrix}
+-14 & -63 & -\frac{19}{16} \\
+  1 &   2 &  \frac{27}{16} \\
+  0 &   0 & -3 \\
+\end{bmatrix}
+$$
+Which has eigenvalues $-7,-5,-3$ as we expect.
+So the internal system is stable.
+
+\newpage
+\item Assume the initial state of the system is $x(0) = \begin{bmatrix} 1 & 3 & 2\end{bmatrix}^T$, plot the state response $x(t)$ of the closed-loop system.
+\newline
+\newline
+We can undo the similarity transform with
+$$ A = T\hat{A}T^{-1} \quad b = T\hat{b} $$
+We can see that the feedback control values are unaffected by the similarity transformation so we get
+$$
+\dot{x}(t) =
+\left(
+\begin{bmatrix}
+-18 & -19 & -15 \\
+20 & 21 & 16 \\
+-5 & -5 & -4 \\
+\end{bmatrix}
+-
+\begin{bmatrix}
+-3 \\
+ 5 \\
+-2 \\
+\end{bmatrix}
+\begin{bmatrix} 14 & 62 & 0 \end{bmatrix}
+\right)x(t)
+=
+\begin{bmatrix}
+ 24 &  167 & -15 \\
+-50 & -289 &  16 \\
+ 23 &  119 &  -4 \\
+\end{bmatrix}
+x(t)
+$$
+Which has a solution
+$$x(t) = e^{A t}x(0)$$
+\begin{figure}[!ht]
+\centering
+\includegraphics[scale=.75]{{images/p1_closed_loop_response}.png}
+\end{figure}
+\end{enumerate}
+
+\newpage
+\section*{Problem 2}
+Consider the same system described by the state equation shown in problem 1.
+$$
+\dot{x}(t) = Ax(t) + Bu(t) =
+\begin{bmatrix}
+-18 & -19 & -15 \\
+20 & 21 & 16 \\
+-5 & -5 & -4 \\
+\end{bmatrix}
+x(t)
++
+\begin{bmatrix}
+-3 \\
+ 5 \\
+-2 \\
+\end{bmatrix}
+u(t)
+$$
+
+\begin{enumerate}[(a)]
+\item Find a similarity transformation to transform the state equation to one with a diagonal $A$ matrix.
+\newline
+\newline
+We know that the eigenvalues of this system are
+$$ \lambda_1 = -3 \quad \lambda_2 = 1 \quad \lambda_3 = 1 $$
+Since we have a repeated eigenvalue we will need to find a generalized eigenvector for the third eigenvector.
+So we are really finding the Jordan decomposition.
+Our normal eigenvalues are
+$$
+\lambda = -3 \to
+\begin{bmatrix}
+14 \\
+-15 \\
+5 \\
+\end{bmatrix}
+\quad
+\lambda = 1 \to
+\begin{bmatrix}
+1 \\
+-1 \\
+0 \\
+\end{bmatrix}
+$$
+To find the generalized eigenvalue for the repeated eigenvalue we need to solve
+$$ (A-\lambda I)v_3 = v_2 $$
+Where $v_3$ is the generalized eigenvalue and $v_2$ is the standard eigenvector for the associated eigenvalue.
+Solving this we get
+$$
+\lambda = 1 \to
+\begin{bmatrix}
+\frac{1}{4} \\
+0 \\
+-\frac{1}{4} \\
+\end{bmatrix}
+$$
+So we have our generalized eigenvectors as
+$$
+S =
+\begin{bmatrix}
+14 & -1 & \frac{1}{4} \\
+-15 & 1 & 0 \\
+5 & 0 & -\frac{1}{4} \\
+\end{bmatrix}
+$$
+The diagonal matrix will be block diagonal since we have a repeated eigenvalue
+$$
+J =
+\begin{bmatrix}
+-3 & 0 & 0 \\
+ 0 & 1 & 1 \\
+ 0 & 0 & 1 \\
+\end{bmatrix}
+$$
+So we have
+$$ A = SJS^{-1} $$
+So our similarity transform is
+$$ T = S^{-1} \implies T^{-1} = S $$
+
+
+\item Characterize the controllable subspace using the eigenvectors obtained in problem 2(a).
+\newline
+\newline
+An eigenvector is uncontrollable if and only if $qA = \lambda q$ and $qb = 0$
+We can check them all at once by looking at $TA$ and $Tb$
+$$
+T =
+\begin{bmatrix}
+\frac{1}{4} & \frac{1}{4} & \frac{1}{4} \\
+\frac{15}{4} & \frac{19}{4} & \frac{15}{4} \\
+ 5 & 5 & 1 \\
+\end{bmatrix}
+\quad
+TA =
+\begin{bmatrix}
+-\frac{3}{4} & -\frac{3}{4} & -\frac{3}{4} \\
+\frac{35}{4} & \frac{39}{4} & \frac{19}{4} \\
+ 5 & 5 & 1 \\
+\end{bmatrix}
+\quad
+Tb =
+\begin{bmatrix}
+0 \\
+5 \\
+8 \\
+\end{bmatrix}
+$$
+We can see that the first row is uncontrollable and it corresponds to the eigenvalue $\lambda = -3$
+Looking at our system in the diagonal case we taking just the controllable eigenvalues
+$$
+\hat{A} =
+\begin{bmatrix}
+1 & 1 \\
+0 & 1 \\
+\end{bmatrix}
+\quad
+\hat{B} =
+\begin{bmatrix}
+5 \\
+8 \\
+\end{bmatrix}
+$$
+This is our controllable subspace in the transformed domain.
+
+
+\item Check the stabilizability of the system based on the result of problem 2(b).
+\newline
+\newline
+Since the only uncontrollable eigenvector is already stable since $\lambda = -3$ we can stabilize the system as the other two eigenvectors are controllable.
+
+\item Design a state feedback controller using the eigen structure obtained in problem 2(b) so that the closed-loop system is internally stable.
+\newline
+\newline
+Using our controllable subsystem we have
+$$
+\begin{bmatrix}
+1 & 1 \\
+0 & 1 \\
+\end{bmatrix}
+x(t) -
+\begin{bmatrix}
+5 \\
+8 \\
+\end{bmatrix}
+\begin{bmatrix} f1 & f2 \end{bmatrix}
+x(t)
+$$
+Using pole placement with the same poles as before, $\{-5, -7\}$.
+$$ det(\lambda I - (A-bF)) = (\lambda+5)(\lambda+7) $$
+This gives us
+$$ F = \begin{bmatrix} 6 & -2 \end{bmatrix} $$
+With a closed loop system of
+$$
+\begin{bmatrix}
+-29 & 11 \\
+-48 & 17
+\end{bmatrix}
+$$
+Which has eigenvalues $\lambda = -5$ and $\lambda = -7$ as we expect.
+Putting this back into the full system we have
+$$ \hat{A} - \hat{b}\begin{bmatrix} 0 \\ 6 \\ -2 \end{bmatrix} $$
+And we know that converting back to our original domain doesn't effect the control.
+Our closed controller gives us
+$$
+\dot{x}(t) =
+\begin{bmatrix}
+-18 & -1 & -21 \\
+ 20 & -9 &  26 \\
+ -5 &  7 &  -8 \\
+\end{bmatrix}
+x(t)
+$$
+This has different eigenvalues which is due to the fact that we didn't have a fully diagonal matrix due to the repeated root requiring a jordan block.
+The final eigenvalues of our system are
+$$\lambda = -3 \quad \lambda = -16 - \sqrt{241} \quad \lambda = -16 + \sqrt{241}$$
+
+\item Assume the initial state of the system is $x(0) = \begin{bmatrix} 1 & 3 & 2\end{bmatrix}^T$, plot the state response $x(t)$ of the closed-loop system.
+\newline
+\newline
+Again the system has the solution
+$$x(t) = e^{A t}x(0)$$
+\begin{figure}[!ht]
+\centering
+\includegraphics[scale=.5]{{images/p2_closed_loop_response}.png}
+\end{figure}
+
+\end{enumerate}
+
+
+\newpage
+\section*{Problem 3}
+\begin{enumerate}[(a)]
+\item If $\{A, b, c, d\}, d \neq 0$, is a realization with $H(s) = c(sI-A)^{-1}b +d$, show that
+$$ \left\{ A - \frac{bc}{d}, \frac{b}{d}, \frac{-c}{d}, \frac{1}{d} \right\} $$
+is a realization for a system with a transfer function $\frac{1}{H(s)}$.
+\newline
+\newline
+Let the system $G(s) = \frac{1}{H(s)}$ be described by $\{\hat{A}, \hat{b}, \hat{c}, \hat{d}\}$.
+Its transfer function is given by
+$$
+G(s) = \hat{c}(sI-\hat{A})^{-1}\hat{b}+\hat{d}
+$$
+If we expand this and show that $G(s) = \frac{1}{H(s)}$ then the statement is true.
+$$\frac{-c}{d} (sI - (A - \frac{bc}{d}))\frac{b}{d} + \frac{1}{d}$$
+% TODO actually do this...
+
+\item If we are given $\{A, b, c, d\}, d \neq 0$, show that the zeros of $c(sI-A)^{-1}b + d$ are the eigenvalues of the matrix $ A - \frac{bc}{d}$.
+\newline
+\newline
+The eigenvalues of $A-\frac{bc}{d}$ can be expanded to
+$$
+A - \frac{1}{d}
+\begin{bmatrix}
+b_1 c_1 & b_1 c_2 & ... & b_1 c_n \\
+b_2 c_1 & b_2 c_2 & ... & b_2 c_n \\
+...  & ... & ... & ... \\
+b_n c_1 & b_n c_2 & ... & b_n c_n \\
+\end{bmatrix}
+$$
+Let $q_{i,j} = \frac{b_ic_j}{d}$ and $Q$ be the matrix of $q_{i,j}$.
+$$ |\lambda I - (A-Q)| = 0 $$
+A matrix where
+$$
+J(i,j) =
+\begin{cases}
+\lambda  + q_{i,i} - a_{i,i} & i = j \\
+q_{i,j} - a_{i,j} & i \neq j \\
+\end{cases}
+$$
+Which we can find the determinant of if we take the cofactor expansion of each element.
+% TODO reduce this down, or show using an argument about the state space vs laplace space meanings of eigenvalues/zeros
+\newline
+\newline
+$$c \frac{cofactor(sI-A)^T}{det(sI-A)} b + d $$
+Let $\mathcal{A}$ be the adjoint of the matrix $(sI-A)$ and $\mathcal{C}_{i,j}$ be the cofactor of the element $\{i,j\}$
+$$c \frac{\mathcal{A}}{det(sI-A)} b + d $$
+Since we only care about zeros we can remove the denominator
+$$c \mathcal{A} b = - d $$
+Performing the matrix multiplication we get
+$$
+c_1 (b_1 \mathcal{C}_{1,1} + b_2\mathcal{C}_{2,1} + ... + b_n\mathcal{C}_{n,1}) +
+c_2 (b_1\mathcal{C}_{1,2} + b_2\mathcal{C}_{2,2} + ... + b_n\mathcal{C}_{n,2}) +
+...
+c_n (b_1\mathcal{C}_{1,n} + b_2\mathcal{C}_{2,n} + ... + b_n\mathcal{C}_{n,n})
+=
+-d
+$$
+Which can be compact written as
+$$\sum_j^n c_j(\sum_i^n b_i \mathcal{C}_{i,j}) = -d$$
+Dividing both sides by $d$ and the same definition for $q$ we can see that we get
+$$\sum_j^n \sum_i^n q_{i,j} \mathcal{C}_{i,j} = -1 $$
+This is the same sum we are searching for when we are solving for the determinant and therefore the solutions will be the same.
+\newline
+Q.E.D
+
+
+
+\end{enumerate}
+
+\end{document}
