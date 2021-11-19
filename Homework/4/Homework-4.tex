@@ -436,60 +436,33 @@ Its transfer function is given by
 $$
 G(s) = \hat{c}(sI-\hat{A})^{-1}\hat{b}+\hat{d}
 $$
-If we expand this and show that $G(s) = \frac{1}{H(s)}$ then the statement is true.
-$$\frac{-c}{d} (sI - (A - \frac{bc}{d}))\frac{b}{d} + \frac{1}{d}$$
-% TODO actually do this...
-
+If we let the output of $G(s)$ be the input of $H(s)$ then we expect the identity to come out.
+Let $\hat{u} = y$
+$$ \dot{\hat{x}} = \hat{A}\hat{x}+\hat{b}y = \hat{A}\hat{x}+\hat{b}(cx + du) $$
+$$ \dot{y} = \hat{c}\hat{x} + \hat{d}y = \hat{c}\hat{x} + \hat{d}(cx + du) $$
+Substituting in for the hat terms we get
+$$ \dot{\hat{x}} = (A - \frac{bc}{d})\hat{x}+\frac{b}{d}(cx + du) $$
+$$ \dot{y} = \frac{-c}{d}\hat{x} + \frac{1}{d}(cx + du) $$
+We also have $\hat{y} - u = \frac{c}{d} (x-\hat{x})$
+Expanding we get
+$$ \dot{\hat{x}} = A\hat{x} + \frac{bc}{d}(x-\hat{x})+bu = A \hat{x} + b(\hat{y}-u) + bu = A\hat{x} + b\hat{y} $$
+Now going into the frequency domain
+$$c(sI - A)\bar{x} = b\hat{y}$$
+$$ c \hat{x} = (c(sI-A)^{-1}b)\hat{y} $$
+$$ c\hat{x}+d\hat{y} = H(s)\hat{y} $$
+$$(sI-A)x = bw $$
+$$c\hat{x} + d\hat{y} - cx + dw = H(s)\hat{y}-H(s)u $$
+$$ \hat{y} - u = \frac{c}{d} (x - \hat{x}) $$
+$$cx = (c(sI-A)^{-1}b \frac{1}{u} $$
+$$cx + dw = H(s) {u} $$
+$$ u = \hat{y} \quad \frac{\hat{y}}{y} = G(s)H(s) = 1 $$
+$$ G(s) = \frac{1}{H(s)} $$
 \item If we are given $\{A, b, c, d\}, d \neq 0$, show that the zeros of $c(sI-A)^{-1}b + d$ are the eigenvalues of the matrix $ A - \frac{bc}{d}$.
 \newline
 \newline
-The eigenvalues of $A-\frac{bc}{d}$ can be expanded to
-$$
-A - \frac{1}{d}
-\begin{bmatrix}
-b_1 c_1 & b_1 c_2 & ... & b_1 c_n \\
-b_2 c_1 & b_2 c_2 & ... & b_2 c_n \\
-...  & ... & ... & ... \\
-b_n c_1 & b_n c_2 & ... & b_n c_n \\
-\end{bmatrix}
-$$
-Let $q_{i,j} = \frac{b_ic_j}{d}$ and $Q$ be the matrix of $q_{i,j}$.
-$$ |\lambda I - (A-Q)| = 0 $$
-A matrix where
-$$
-J(i,j) =
-\begin{cases}
-\lambda  + q_{i,i} - a_{i,i} & i = j \\
-q_{i,j} - a_{i,j} & i \neq j \\
-\end{cases}
-$$
-Which we can find the determinant of if we take the cofactor expansion of each element.
-% TODO reduce this down, or show using an argument about the state space vs laplace space meanings of eigenvalues/zeros
-\newline
-\newline
-$$c \frac{cofactor(sI-A)^T}{det(sI-A)} b + d $$
-Let $\mathcal{A}$ be the adjoint of the matrix $(sI-A)$ and $\mathcal{C}_{i,j}$ be the cofactor of the element $\{i,j\}$
-$$c \frac{\mathcal{A}}{det(sI-A)} b + d $$
-Since we only care about zeros we can remove the denominator
-$$c \mathcal{A} b = - d $$
-Performing the matrix multiplication we get
-$$
-c_1 (b_1 \mathcal{C}_{1,1} + b_2\mathcal{C}_{2,1} + ... + b_n\mathcal{C}_{n,1}) +
-c_2 (b_1\mathcal{C}_{1,2} + b_2\mathcal{C}_{2,2} + ... + b_n\mathcal{C}_{n,2}) +
-...
-c_n (b_1\mathcal{C}_{1,n} + b_2\mathcal{C}_{2,n} + ... + b_n\mathcal{C}_{n,n})
-=
--d
-$$
-Which can be compact written as
-$$\sum_j^n c_j(\sum_i^n b_i \mathcal{C}_{i,j}) = -d$$
-Dividing both sides by $d$ and the same definition for $q$ we can see that we get
-$$\sum_j^n \sum_i^n q_{i,j} \mathcal{C}_{i,j} = -1 $$
-This is the same sum we are searching for when we are solving for the determinant and therefore the solutions will be the same.
-\newline
-Q.E.D
-
-
+With the previous problem we know that the transfer function of $A - \frac{bc}{d}$ is $\frac{1}{H(s)}$ where $H(s)$ is the transfer function for $c(sI-A)^{-1}b + d$.
+The poles of $G(s)$ are the eigenvalues of $A - \frac{bc}{d}$. While the poles of $G(s)$ are the zeros of $H(s)$.
+Therefore the zeros of the original system $G(s)$ are equal to the poles of $H(s)$ which are just the eigenvalues of $H(s)$'s $A$ matrix which is given by $A-\frac{bc}{d}$.
 
 \end{enumerate}
 
