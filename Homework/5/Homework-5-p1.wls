@@ -57,8 +57,10 @@ n1 // Expand // MatrixForm // TeXForm
 
 dhc = {{480/49,7/3},{-48/7,0}};
 dhc // MatrixForm
-dic = {{960/49, -1440/49, -5, 3, -59/3, 19},{-2592/49, -4752/49, 0, 16, 48}};
+dic = {{960/49, -1440/49, -5/3, -59/3, 19},{-2592/49, -4752/49, 0, 16, 48}};
 dic // MatrixForm
+nic = {{0, 144/49, 0,7/3,3},{-48/7,96/49,0,0,2}};
+nic // MatrixForm
 aco = {
 { 0, 0, 0, 0, 0},
 { 1, 0, 0, 0, 0},
@@ -75,10 +77,13 @@ bco = {
 { 0, 0 }
 };
 bco // MatrixForm
-ac = aco - bco.Inverse[dhc].dic // Simplify
-
-
-
+ac = aco - bco.Inverse[dhc].dic // Simplify;
+ac // MatrixForm
+bc = bco.Inverse[dhc] // Simplify;
+bc // MatrixForm
+cc = nic;
+cc // MatrixForm
+bc // MatrixForm // TeXForm
 
 
 
