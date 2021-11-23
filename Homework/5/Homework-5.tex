@@ -44,7 +44,7 @@ N(s) =
 -6(s-1) & (s-1)^2(s-2) \\
 \end{bmatrix}
 \]
-Now we need to find the Smith form of \(H(s)\) by elementary row and column operations.
+Now we need to find the Smith form of \(N(s)\) by elementary row and column operations.
 First get the first entry to be a constant then we can easily remove all off diagonal entries.
 \[
 \begin{bmatrix}
@@ -68,74 +68,55 @@ First get the first entry to be a constant then we can easily remove all off dia
 We can rescale to make it a bit easier to see
 \[
 \begin{bmatrix}
-6 & 0\\
-0 & 1\\
+1 & 0\\
+\frac{3}{8}(s-1) & 1\\
 \end{bmatrix}
 \begin{bmatrix}
 16 & \frac{1}{6}(s^4 + 3s^3 -s^2 -3s - 32) \\
 -6(s-1) & 2(s-1) \\
 \end{bmatrix}
 \begin{bmatrix}
-\frac{1}{6} & \frac{1}{3} \\
-0 & 1 \\
-\end{bmatrix}
-=
-\begin{bmatrix}
-16 & s^4 + 3s^3 -s^2 -3s \\
-(s-1) & 0 \\
-\end{bmatrix}
-\]
-Now we can remove the off diagonal entries with
-$$
-\begin{bmatrix}
-1 & 0 \\
-s-1 & 16\\
-\end{bmatrix}
-\begin{bmatrix}
-16 & s^4 + 3s^3 -s^2 -3s \\
-(s-1) & 0 \\
-\end{bmatrix}
-\begin{bmatrix}
-1 & \frac{-1}{16}(s^4 + 3s^3 -s^2 -3s)  \\
+1 & \frac{-1}{16}(\frac{1}{6}s^4+\frac{1}{2}s^3-\frac{1}{6}s^2-\frac{1}{2}s-\frac{16}{3}) \\
 0 & 1 \\
 \end{bmatrix}
 =
 \begin{bmatrix}
 16 & 0 \\
-0 & s^5+2s^4-4s^3-2s^2+3s \\
+0 & \frac{1}{16}(s^5+2s^4-4s^3-2s^2+3s) \\
 \end{bmatrix}
-$$
+\]
 We can combine the elementary operations to find $U$ and $V$
 \[
 U =
 \begin{bmatrix}
-6 & s+7\\
-7(s-1) & (s+3)^2\\
+1 & \frac{s+7}{6} \\
+\frac{3 (s-1)}{8} & \frac{1}{16} (s+3)^2 \\
 \end{bmatrix}
 \quad
 V =
 \begin{bmatrix}
-\frac{1}{6} & \frac{-1}{96}(s^4+3s^3-17s^2+45s-32) \\
+1 & \frac{1}{96} \left(-s^4-3 s^3+17 s^2-45 s+32\right) \\
 0 & 1 \\
 \end{bmatrix}
 \]
-Which we can verify by checking $U(s)d(s)H(s)V(s) = \Lambda(s)$.
+Which we can verify by checking $U(s)N(s)V(s) = \Lambda(s)$.
+We can also verify that $U$ and $V$ are unimodular as both their determinants are ALWAYS 1.
 We can get $U_1$ and $U_2$ by noting that $H(s) = U_1(s)\frac{\Lambda(s)}{d(s)}U_2(s)$
 So $U_1(s) = U^{-1}$ and $U_2 = V^{-1}$
 $$
 U_1(s) =
-\frac{1}{16}
 \begin{bmatrix}
-\frac{1}{6}(s+3)^2 & \frac{-1}{6}(s+7) \\
-s-1 & 1 \\
+\frac{1}{16} (s+3)^2 & \frac{1}{6} (-s-7) \\
+-\frac{3}{8} (s-1) & 1 \\
 \end{bmatrix}
 \quad
 U_2(s) =
 \begin{bmatrix}
-6 & \frac{1}{16}(s^4+3s^3-17s^2+45s-32) \\
+1 & \frac{1}{96} \left(s^4+3 s^3-17 s^2+45 s-32\right) \\
 0 & 1 \\
 \end{bmatrix}
 $$
+We can also verify these are unimodular as well by taking the determinant and seeing that they always equal 1 as well.
 We can get the Smith-McMillan Form of $H(s)$ with $H(s) = U_1(s) M(s) U_2(s)$
 Which we can easily get our $\epsilon$'s and $\psi$'s from
 $$
@@ -150,25 +131,26 @@ M(s) =
 $$
 With the $\psi$'s we can determine that the minimal realization of $H(s)$ is $n_{min}=5$.
 Expanding $M(s) = E(s)\Psi_R(s)^{-1}$ we get $H(s) = U_1(s)E(s)[U_2(s)^{-1}\Psi_R(s)]^{-1}$ which gives us our MFD form
+We can also note that $U_2(s)^{-1} = V(s)$ which we already have
 $ H(s) = N_0(s)D_0(s)^{-1} $ which will have minimal degree.
 $$
 H(s) =
 \begin{bmatrix}
-\frac{1}{6}(s+3)^2 & \frac{-1}{6}(s+7) \\
-s-1 & 1 \\
+\frac{1}{16} (s+3)^2 & \frac{1}{6} (-s-7) \\
+-\frac{3}{8} (s-1) & 1 \\
 \end{bmatrix}
 \begin{bmatrix}
 16 & 0 \\
-0 & s^2 +6s + 15 \\
+0 & s(s+1) \\
 \end{bmatrix}
 \left(
 \begin{bmatrix}
-6 & \frac{1}{16}(s^4+3s^3-17s^2+45s-32) \\
+1 & \frac{1}{96} \left(-s^4-3 s^3+17 s^2-45 s+32\right) \\
 0 & 1 \\
 \end{bmatrix}
 \begin{bmatrix}
 (s-1)^2(s+3)^2 & 0 \\
-0 & (s+3) \\
+0 & 16(s+3) \\
 \end{bmatrix}
 \right)^{-1}
 $$
@@ -176,57 +158,84 @@ So we now have a MFD of $H(s)$.
 $$
 H(s) =
 \begin{bmatrix}
-\frac{1}{6} (s-1) (s+3)^2 & -\frac{1}{96} (s-1) s (s+1) (s+7) \\
--(s-1)^2 & \frac{1}{16} (s-1) s (s+1) \\
+s^2+6 s+9 & -\frac{s^3}{6}-\frac{4 s^2}{3}-\frac{7 s}{6} \\
+6-6 s & s^2+s \\
 \end{bmatrix}
 \begin{bmatrix}
-\frac{1}{6} (s-1)^3 (s+3)^2 & -\frac{1}{96} (s-1) (s+3) \left(s^4+3 s^3-17 s^2+45 s-32\right) \\
-0 & (s-1) (s+3) \\
+s^4+4 s^3-2 s^2-12 s+9 & -\frac{s^5}{6}-s^4+\frac{4 s^3}{3}+s^2-\frac{103 s}{6}+16 \\
+0 & 16 s+48 \\
 \end{bmatrix}
 ^{-1}
 $$
+We can also verify that it's true by computing the product.
 With this we can now create the state space model.
 We write $D(s) = D_{hc}S(s) + D_{IC}\Psi(s)$ where $S(s)$ is a diagonal matrix of $s^k$ for each column where $k$ is the largest degree of that column and $\Psi(s)$ recreates the remaining terms.
 $$
 D(s) =
 \begin{bmatrix}
-\frac{s^5}{6} & \frac{-s^6}{96} \\
+s^4 & \frac{-s^5}{6} \\
   0 &   0 \\
 \end{bmatrix}
 +
 \begin{bmatrix}
-\frac{s^4}{2}-s^3-\frac{5 s^2}{3}+\frac{7 s}{2}-\frac{3}{2} & -\frac{5 s^5}{96}+\frac{7 s^4}{48}-\frac{s^3}{48}-\frac{109s^2}{96}+\frac{199 s}{96}-1 \\
-0 & s^2+2 s-3 \\
+4 s^3-2 s^2-12 s+9 & -s^4+\frac{4 s^3}{3}+s^2-\frac{103 s}{6}+16 \\
+0 & 16 s+48 \\
 \end{bmatrix}
 $$
 Not sure why $D_{hc}$ is singluar here, did I mess up on the Smith McMillian process?
-\newline
-Using the $S(s)$ and $\Psi(s)$ matrices we get
+We can column reduce $D(s)$ with some matrix $Z(s)$ to get $N_1(s)$ and $D_1(s)$ where
+$H(s) = N(s)Z(s)(D(s)Z(s))^{-1} = N_1(s)D_1(s)^{-1}$
 $$
-D(s) =
+Z(s) =
 \begin{bmatrix}
-\frac{1}{6} & \frac{-1}{96} \\
-0 & 0 \\
+\frac{1}{98}(-7s^2-47s +32) & \frac{s+2}{6} \\
+\frac{-3}{49}(7s + 33) & 1 \\
+\end{bmatrix}
+\implies
+H(s) =
+\begin{bmatrix}
+\frac{144}{49} & \frac{7 s}{3}+3 \\
+-\frac{48}{49} (7 s-2) & 2 \\
 \end{bmatrix}
 \begin{bmatrix}
-s^5 & 0 \\
-0 & s^6 \\
+\frac{480}{49} \left(s^2+2 s-3\right) & \frac{1}{3} \left(7 s^3-5 s^2-59 s+57\right) \\
+-\frac{48}{49} (s+3) (7 s+33) & 16 (s+3) \\
+\end{bmatrix}
+^{-1}
+$$
+Also note that $Z(s)$ is unimodular as its determinant is always 1.
+With $D_1(s)$ in a better state we can now break it up properly.
+$$
+D_1(s) =
+\begin{bmatrix}
+\frac{480}{49} s^2 & \frac{7}{3}s^3 \\
+\frac{-48}{7} s^2 & 0\\
 \end{bmatrix}
 +
-\setcounter{MaxMatrixCols}{11}
 \begin{bmatrix}
-\frac{1}{2} & -1 & \frac{-5}{3} & \frac{7}{2} & \frac{-3}{2} & \frac{-5}{96} & \frac{7}{48} & \frac{-1}{48} & \frac{-109}{96} & \frac{199}{96} & -1 \\
-          0 &  0 &            0 &           0 &            0 &             0 &            0 &             0 &               1 &              2 & -3 \\
+\frac{960}{49}s-\frac{1440}{49} & -\frac{5}{3}s^2-\frac{59}{3}s+19 \\
+-\frac{2592}{49}s-\frac{4752}{49} & 16 s+48 \\
+\end{bmatrix}
+$$
+Using the $S(s)$ and $\Psi(s)$ matrices we get
+$$
+D_1(s) =
+\begin{bmatrix}
+\frac{480}{49} & \frac{7}{3} \\
+\frac{-48}{7} & 0\\
 \end{bmatrix}
 \begin{bmatrix}
-s^4 & 0 \\
-s^3 & 0 \\
 s^2 & 0 \\
+0 & s^3 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+  \frac{960}{49} & -\frac{1440}{49} & -\frac{5}{3} & -\frac{59}{3} & 19 \\
+-\frac{2592}{49} & -\frac{4752}{49} & 0 & 16 & 48 \\
+\end{bmatrix}
+\begin{bmatrix}
   s & 0 \\
   1 & 0 \\
-  0 & s^5 \\
-  0 & s^4 \\
-  0 & s^3 \\
   0 & s^2 \\
   0 & s \\
   0 & 1 \\
@@ -234,21 +243,14 @@ s^2 & 0 \\
 $$
 We can also write the $N(s)$ matrix in terms of $\Psi(s)$
 $$
-N(s) =
-\setcounter{MaxMatrixCols}{11}
+N_1(s) =
 \begin{bmatrix}
-0 & \frac{1}{6} & \frac{5}{6} & \frac{1}{2} & \frac{-3}{2} & 0 & \frac{-1}{96} & \frac{-7}{96} & \frac{1}{96} & \frac{7}{96} & 0 \\
-0 & 0& -1 &2 & -1 & 0 & 0 & \frac{1}{16} & 0 & \frac{-1}{16} & 0 \\
+0 & \frac{144}{49} & 0 & \frac{7}{3} & 3 \\
+-\frac{48}{7} & \frac{96}{49} & 0 & 0 & 2 \\
 \end{bmatrix}
 \begin{bmatrix}
-s^4 & 0 \\
-s^3 & 0 \\
-s^2 & 0 \\
   s & 0 \\
   1 & 0 \\
-  0 & s^5 \\
-  0 & s^4 \\
-  0 & s^3 \\
   0 & s^2 \\
   0 & s \\
   0 & 1 \\
@@ -258,46 +260,83 @@ We can now find the controller form realization $\{A_c,B_c,C_c\}$
 First we have $A_c^o$ and $B_c^o$
 $$
 A_c^o =
-\setcounter{MaxMatrixCols}{11}
 \begin{bmatrix}
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
-0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
-0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
-0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 \\
 \end{bmatrix}
 \quad
 B_c^o =
 \begin{bmatrix}
 1 & 0 \\
 0 & 0 \\
-0 & 0 \\
-0 & 0 \\
-0 & 0 \\
 0 & 1 \\
-0 & 0 \\
-0 & 0 \\
-0 & 0 \\
 0 & 0 \\
 0 & 0 \\
 \end{bmatrix}
 $$
 With this and the relationships
 $$ A_c = A_c^o - B_c^o D_{hc}^{-1}D_{Ic} \quad B_c = B_c^oD_{hc}^{-1} \quad C_c = N_{ic} $$
-Due the the inverse of $D_{hc}$ not existing since the one I have is singular It can't be computed.
 We can find the state space representation
 $$
 A_c =
 \begin{bmatrix}
-9
+-\frac{54}{7} & -\frac{99}{7} & 0 & \frac{7}{3} & 7 \\
+1 & 0 & 0 & 0 & 0 \\
+\frac{57600}{2401} & \frac{172800}{2401} & \frac{5}{7} & -\frac{67}{49} & -\frac{1839}{49} \\
+0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 \\
+\end{bmatrix}
+\quad
+B_c =
+\begin{bmatrix}
+0 & -\frac{7}{48} \\
+0 & 0 \\
+\frac{3}{7} & \frac{30}{49} \\
+0 & 0 \\
+0 & 0 \\
+\end{bmatrix}
+\quad
+C_c =
+\begin{bmatrix}
+0 & \frac{144}{49} & 0 & \frac{7}{3} & 3 \\
+-\frac{48}{7} & \frac{96}{49} & 0 & 0 & 2 \\
 \end{bmatrix}
 $$
+Putting it all together we have
+$$
+\dot{x}(t) =
+\begin{bmatrix}
+-\frac{54}{7} & -\frac{99}{7} & 0 & \frac{7}{3} & 7 \\
+1 & 0 & 0 & 0 & 0 \\
+\frac{57600}{2401} & \frac{172800}{2401} & \frac{5}{7} & -\frac{67}{49} & -\frac{1839}{49} \\
+0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 \\
+\end{bmatrix}
+x(t) +
+\begin{bmatrix}
+0 & -\frac{7}{48} \\
+0 & 0 \\
+\frac{3}{7} & \frac{30}{49} \\
+0 & 0 \\
+0 & 0 \\
+\end{bmatrix}
+u(t)
+$$
+$$
+y(t) =
+\begin{bmatrix}
+0 & \frac{144}{49} & 0 & \frac{7}{3} & 3 \\
+-\frac{48}{7} & \frac{96}{49} & 0 & 0 & 2 \\
+\end{bmatrix}
+x(t)
+$$
+As our state space represenation.
+We know this is minimal since the degree matches the McMillian degree we found earlier $5$.
+
+
 
 \newpage
 \section*{Problem 2}
