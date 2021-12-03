@@ -1,0 +1,159 @@
+\documentclass{article}
+
+\usepackage[margin=.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+
+
+\author{Damien Prieur}
+\title{Final \\ MEM 633}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Problem 1}
+Consider the following transfer function matrix
+$$
+H(s) = \frac{
+    \begin{bmatrix}
+        -s & s \\
+        s+1 & 1 \\
+    \end{bmatrix}
+}{(s-1)(s+2)^2}
+$$
+\begin{enumerate}[(a)]
+\item Find a state-space realization of $H(s)$ in block controller form.
+\newline
+
+\item Use the PBH Test to check the controllability and observability of the realization.
+\newline
+
+\item Is it a minimal realization?
+If not, find a similarity transformation to transform the realization into either controllablility or observability decompostion.
+Then find a minimal realization by eliminating the uncontrollable and/or unobservable parts of the system.
+\newline
+
+\item Determine the poles and zeros by using the $(A,B,C)$ matrices of the minimal realization in 1(c).
+\newline
+Note that the zeros of $(A,B,C)$ are the frequencies at which the rank of
+$$
+\begin{bmatrix}
+sI-A & B \\
+-C & D \\
+\end{bmatrix}
+$$
+drops below its normal rank.
+\newline
+
+\end{enumerate}
+
+\newpage
+\section*{Problem 2}
+For the transfer matrix $H(s)$ shown in Problem \#1, which can be represented as
+$$ H(s) = N(s)D(s)^{-1} $$
+Where
+$$
+N(s) =
+\begin{bmatrix}
+-s & s \\
+s+1 & 1 \\
+\end{bmatrix}
+,\quad
+D(s) =
+(s-1)(s+2)^2
+\begin{bmatrix}
+1 & 0 \\
+0 & 1 \\
+\end{bmatrix}
+$$
+\begin{enumerate}[(a)]
+\item Find a greatest common right divisor (gcrd) of $N(s)$ and $D(s)$.
+\newline
+
+\item Find an irreducible right MFD for $H(s)$ by extracting the gcrd of $N(s)$ and $D(s)$.
+\newline
+
+\item Determine the poles and zeros of the system based on the irreducible MFD in (b).
+\newline
+
+\item Find a state-space realization for the MFD in (c)
+\newline
+
+\item Is the state-space realization controllable and observable? Is it a minimal realization?
+\newline
+
+\item Can you find a similarity transformation which relates the realization in Problem \#1(c) and problem \#2(d)?
+If yes, show the results and procedure. If not explain.
+\newline
+
+\end{enumerate}
+
+\newpage
+\section*{Problem 3}
+Consider the following system,
+\begin{figure}[!htb]
+\centering
+\tikzset{
+    block/.style = {draw, fill=white, rectangle, minimum height=1em, minimum width=1em},
+    tmp/.style  = {coordinate, node distance=1cm},
+    sum/.style= {draw, fill=white, circle, node distance=1cm},
+    input/.style = {coordinate, node distance=1cm},
+    output/.style= {coordinate, node distance=2cm},
+    pinstyle/.style = {pin edge={to-,thin,black}},
+}
+\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+\node [sum, name=inputSum ](inputSum){};
+\node [block, right of=inputSum](controller){$K(s)$};
+\node [block, right of=controller](transferFunc){$G(s)$};
+\node [tmp, right of=transferFunc](tmpOutput) {};
+\node [output, right of=tmpOutput](output) {};
+\node [tmp, below of=transferFunc](belowTF) {};
+
+\draw [->] (inputSum) --  (controller) {};
+\draw [->] (controller) -- node[below]{$u(t)$} (transferFunc) {};
+\draw [-] (transferFunc) -- (tmpOutput) {};
+\draw [->] (tmpOutput) -- node[above]{$Y(s)$} node[below]{$y(t)$} (output) {};
+\draw [-] (tmpOutput) |- (belowTF) {};
+\draw [->] (belowTF) -| (inputSum) {};
+\end{tikzpicture}
+\end{figure}
+where
+$$ G(s) = \frac{s-2}{s^2-4s} $$
+In the following you wil ldesign an observer-based controller $K(s)$ so that the closed-loop system is stable.
+\begin{enumerate}[(a)]
+\item Find a state space representation of $G(s)$.
+\newline
+
+\item Use the Riccati-equation approach to determine an observer based controller $K_1(s)$ such that the closed loop system is stable.
+\newline
+
+\item Find a state space representation of the closed loop system with $y(t)$ as the output.
+\newline
+
+\item Verify that the closed loop system poles are the regulator poles together with the observer poles.
+\newline
+
+\item Plot the state response for $x(t)$ and $u(t)$ due to the initial conditions $y(0)$, and $\dot{y}(0)$.
+\newline
+
+\item Repeat (b), (c), (d), and (e) with a different observer-based controller $K_2(s)$, which is obtained by choosing different weighting matrices in the Riccati equations.
+\newline
+
+\item Comment on how the weighting matrices in the Riccati equation and the pole location of the closed-loop system affect the closed loop system performance.
+\newline
+
+\end{enumerate}
+
+\end{document}
