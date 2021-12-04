@@ -36,14 +36,319 @@ $$
 \begin{enumerate}[(a)]
 \item Find a state-space realization of $H(s)$ in block controller form.
 \newline
+Using the block controller form we can just follow the procedure.
+$$ y(s) = N(s) D_R(s)^{-1}u(s) $$
+$$
+N(s) =
+\begin{bmatrix}
+-s & s \\
+s+1 & 1 \\
+\end{bmatrix}
+\quad
+D_R(s) =
+(s-1)(s+2)^2
+\begin{bmatrix}
+1 & 0 \\
+0 & 1 \\
+\end{bmatrix}
+$$
+Let $\xi(s) = D_R(s)^{-1}u(s)$ then we get
+$$ y(s) = N(s) \xi(s) \qquad D_R(s)\xi(s) = u(s) $$
+Expanding $N(s)$ and $d(s)$we get
+$$
+N(s) =
+\begin{bmatrix}
+-1 & 1 \\
+1 & 0 \\
+\end{bmatrix}
+s
++
+\begin{bmatrix}
+0 & 0 \\
+1 & 1 \\
+\end{bmatrix}
+\qquad
+d(s) = s^3 + 3s^2 - 4
+$$
+Let $N_2(s) = 0$, $N_1(s)$ be the first term of $N(s)$ without the $s$ and $N_0(s)$ be the last term of $N(s)$
+\newline
+Taking the inverse laplace transform of $\xi(s)$ and $y(s)$ we get
+$$
+\dddot{\xi} =  - 3 \ddot{\xi} + 4\xi + u(t)
+\qquad
+y(t) =
+\begin{bmatrix}
+-1 & 1 \\
+1 & 0 \\
+\end{bmatrix}
+\dot{\xi}
++
+\begin{bmatrix}
+0 & 0 \\
+1 & 1 \\
+\end{bmatrix}
+\xi
+$$
+In matrix form we get
+$$
+\begin{bmatrix}
+\dddot{\xi} \\
+\ddot{\xi} \\
+\dot{\xi} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+-3 & 0 & 4 \\
+I & 0 & 0 \\
+0 & I & 0 \\
+\end{bmatrix}
+\begin{bmatrix}
+\ddot{\xi} \\
+\dot{\xi} \\
+\xi \\
+\end{bmatrix}
++
+\begin{bmatrix}
+I \\
+0 \\
+0 \\
+\end{bmatrix}
+u(t)
+$$
+$$
+y(t) =
+\begin{bmatrix}
+N_2 & N_1 & N_0
+\end{bmatrix}
+\begin{bmatrix}
+\ddot{\xi} \\
+\dot{\xi} \\
+\xi \\
+\end{bmatrix}
++
+0 u(t)
+$$
+Now expanding $\xi = \begin{bmatrix} x_1 \\ x_2 \end{bmatrix}$ and plugging in we get
+$$
+\begin{bmatrix}
+\dddot{x_1} \\
+\dddot{x_2} \\
+\ddot{x_1} \\
+\ddot{x_2} \\
+\dot{x_1} \\
+\dot{x_2} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+-3 &  0 & 0 & 0 & 4 & 0 \\
+ 0 & -3 & 0 & 0 & 0 & 4 \\
+ 1 &  0 & 0 & 0 & 0 & 0 \\
+ 0 &  1 & 0 & 0 & 0 & 0 \\
+ 0 &  0 & 1 & 0 & 0 & 0 \\
+ 0 &  0 & 0 & 1 & 0 & 0 \\
+\end{bmatrix}
+\begin{bmatrix}
+\ddot{x_1} \\
+\ddot{x_2} \\
+\dot{x_1} \\
+\dot{x_2} \\
+x_1 \\
+x_2 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+1 & 0  \\
+0 & 1  \\
+0 & 0  \\
+0 & 0  \\
+0 & 0  \\
+0 & 0  \\
+\end{bmatrix}
+u(t)
+$$
+$$
+y(t) =
+\begin{bmatrix}
+0 & 0 & -1 & 1 & 0 & 0 \\
+0 & 0 &  1 & 0 & 1 & 1 \\
+\end{bmatrix}
+\begin{bmatrix}
+\ddot{x_1} \\
+\ddot{x_2} \\
+\dot{x_1} \\
+\dot{x_2} \\
+x_1 \\
+x_2 \\
+\end{bmatrix}
+$$
 
 \item Use the PBH Test to check the controllability and observability of the realization.
 \newline
+By the PBH test we know that $\{A,B\}$ is controllable if and only if $rank[sI-A \quad B] = n \quad \forall s$ where $n$ is the size of $A$
+$$
+\begin{bmatrix}
+s+3 &   0 & 0 & 0 &-4 & 0 & 1 & 0\\
+  0 & s+3 & 0 & 0 & 0 &-4 & 0 & 1\\
+ -1 &   0 & s & 0 & 0 & 0 & 0 & 0\\
+  0 &  -1 & 0 & s & 0 & 0 & 0 & 0\\
+  0 &   0 &-1 & 0 & s & 0 & 0 & 0\\
+  0 &   0 & 0 &-1 & 0 & s & 0 & 0\\
+\end{bmatrix}
+$$
+We know that if $s$ is not an eigenvalue then the $A$ matrix is already going to be full rank, so we only need to check the eigenvalues of $A$
+$$eign(A) = \{ -2, 1 \}$$
+These eigenvalues are have multiplicity 4 and 2 respectively.
+Plugging in these values we get
+$$
+s \to -2 =
+\begin{bmatrix}
+  1 &   0 & 0 & 0 &-4 & 0 & 1 & 0\\
+  0 &   1 & 0 & 0 & 0 &-4 & 0 & 1\\
+ -1 &   0 &-2 & 0 & 0 & 0 & 0 & 0\\
+  0 &  -1 & 0 &-2 & 0 & 0 & 0 & 0\\
+  0 &   0 &-1 & 0 &-2 & 0 & 0 & 0\\
+  0 &   0 & 0 &-1 & 0 &-2 & 0 & 0\\
+\end{bmatrix}
+\quad
+s \to 1 =
+\begin{bmatrix}
+  4 &   0 & 0 & 0 &-4 & 0 & 1 & 0\\
+  0 &   4 & 0 & 0 & 0 &-4 & 0 & 1\\
+ -1 &   0 & 1 & 0 & 0 & 0 & 0 & 0\\
+  0 &  -1 & 0 & 1 & 0 & 0 & 0 & 0\\
+  0 &   0 &-1 & 0 & 1 & 0 & 0 & 0\\
+  0 &   0 & 0 &-1 & 0 & 1 & 0 & 0\\
+\end{bmatrix}
+$$
+Which both have rank$= 6$ which is full rank.
+\fbox{So the system is controllable.}
+\newline
+Now for observability from the PBH test we know that a system is controllable if and only if $rank\begin{bmatrix} sI-A \\ C \end{bmatrix} = n \quad \forall s$ where $n$ is the size of $A$
+$$
+\begin{bmatrix}
+s+3 &   0 & 0 & 0 &-4 & 0 \\
+  0 & s+3 & 0 & 0 & 0 &-4 \\
+ -1 &   0 & s & 0 & 0 & 0 \\
+  0 &  -1 & 0 & s & 0 & 0 \\
+  0 &   0 &-1 & 0 & s & 0 \\
+  0 &   0 & 0 &-1 & 0 & s \\
+  0 &   0 &-1 & 1 & 0 & 0 \\
+  0 &   0 & 1 & 0 & 1 & 1 \\
+\end{bmatrix}
+$$
+Again we only need to look at the eigenvalues.
+$$
+s \to -2 =
+\begin{bmatrix}
+  1 &   0 & 0 & 0 &-4 & 0 \\
+  0 &   1 & 0 & 0 & 0 &-4 \\
+ -1 &   0 &-2 & 0 & 0 & 0 \\
+  0 &  -1 & 0 &-2 & 0 & 0 \\
+  0 &   0 &-1 & 0 &-2 & 0 \\
+  0 &   0 & 0 &-1 & 0 &-2 \\
+  0 &   0 &-1 & 1 & 0 & 0 \\
+  0 &   0 & 1 & 0 & 1 & 1 \\
+\end{bmatrix}
+\quad
+s \to 1 =
+\begin{bmatrix}
+  4 &   0 & 0 & 0 &-4 & 0 \\
+  0 &   4 & 0 & 0 & 0 &-4 \\
+ -1 &   0 & 1 & 0 & 0 & 0 \\
+  0 &  -1 & 0 & 1 & 0 & 0 \\
+  0 &   0 &-1 & 0 & 1 & 0 \\
+  0 &   0 & 0 &-1 & 0 & 1 \\
+  0 &   0 &-1 & 1 & 0 & 0 \\
+  0 &   0 & 1 & 0 & 1 & 1 \\
+\end{bmatrix}
+$$
+The first eigenvalue $-2$ only has rank $5$ while the second has rank $6$. \fbox{The system is not fully observable.}
+
 
 \item Is it a minimal realization?
 If not, find a similarity transformation to transform the realization into either controllablility or observability decompostion.
 Then find a minimal realization by eliminating the uncontrollable and/or unobservable parts of the system.
 \newline
+Since it's not both controllable and observable it's not a minimal realization.
+Since we know that the observability is the issue we can perform observability decomposition to remove the unobservable parts of the system.
+Following the process for observability decomposition we choose $T^{-1} = \begin{bmatrix}U_1 \\ U_2 \end{bmatrix}$ such that $U_1$ are $5$ linearly independent row vectors of the observability matrix and $U_2$ makes square matrix full rank.
+If we take the first 5 rows of the observability matrix they are linearly independent.
+$$
+T^{-1} =
+\begin{bmatrix}
+-1 & 1 & 0 & 0 & 0 & 0 \\
+1 & 0 & 1 & 1 & 0 & 0 \\
+3 & -3 & 0 & 0 & -4 & 4 \\
+-2 & 1 & 0 & 0 & 4 & 0 \\
+-9 & 9 & -4 & 4 & 12 & -12 \\
+1 & 0 & 0 & 0 & 0 & 0 \\
+\end{bmatrix}
+\implies
+T =
+\begin{bmatrix}
+0 & 0 & 0 & 0 & 0 & 1 \\
+1 & 0 & 0 & 0 & 0 & 1 \\
+0 & \frac{1}{2} & -\frac{3}{8} & 0 & -\frac{1}{8} & -\frac{1}{2} \\
+0 & \frac{1}{2} & \frac{3}{8} & 0 & \frac{1}{8} & -\frac{1}{2} \\
+-\frac{1}{4} & 0 & 0 & \frac{1}{4} & 0 & \frac{1}{4} \\
+\frac{1}{2} & 0 & \frac{1}{4} & \frac{1}{4} & 0 & \frac{1}{4} \\
+\end{bmatrix}
+$$
+Applying the simlarity transform $T$ as $\{\bar{A} = T^{-1}AT, \bar{B}=T^{-1}B, \bar{C}=CT\}$
+$$
+\bar{A} =
+\begin{bmatrix}
+0 & 0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 0 & 1 & 0 \\
+1 & 2 & -\frac{1}{2} & -1 & -\frac{1}{2} & 0 \\
+4 & 0 & 0 & 0 & -3 & 0 \\
+-1 & 0 & 0 & 1 & 0 & -2 \\
+\end{bmatrix}
+\quad
+\bar{B} =
+\begin{bmatrix}
+-1 & 1 \\
+ 1 & 0 \\
+ 3 & -3 \\
+-2 & 1 \\
+-9 & 9 \\
+ 1 & 0 \\
+\end{bmatrix}
+\quad
+\bar{C} =
+\begin{bmatrix}
+0 & 0 & \frac{3}{4} & 0 & \frac{1}{4} & 0 \\
+\frac{1}{4} & \frac{1}{2} & -\frac{1}{8} & \frac{1}{2} & -\frac{1}{8} & 0 \\
+\end{bmatrix}
+$$
+If we take the $5x5$ subsystem and their corresponding terms in the $\bar{B}$ and $\bar{C}$ matricies we get an observable subsystem.
+$$
+\bar{A}_{min} =
+\begin{bmatrix}
+0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 & 1 \\
+1 & 2 & -\frac{1}{2} & -1 & -\frac{1}{2} \\
+4 & 0 & 0 & 0 & -3 \\
+\end{bmatrix}
+\quad
+\bar{B}_{min} =
+\begin{bmatrix}
+-1 & 1 \\
+ 1 & 0 \\
+ 3 & -3 \\
+-2 & 1 \\
+-9 & 9 \\
+\end{bmatrix}
+\quad
+\bar{C}_{min} =
+\begin{bmatrix}
+0 & 0 & \frac{3}{4} & 0 & \frac{1}{4} \\
+\frac{1}{4} & \frac{1}{2} & -\frac{1}{8} & \frac{1}{2} & -\frac{1}{8} \\
+\end{bmatrix}
+$$
+If we compute $\bar{C}_{min}\left(s I - \bar{A}_{min} \right)^{-1}\bar{B}_{min}$ we can verify that it gives the same transfer function we started with.
 
 \item Determine the poles and zeros by using the $(A,B,C)$ matrices of the minimal realization in 1(c).
 \newline
@@ -56,6 +361,57 @@ sI-A & B \\
 $$
 drops below its normal rank.
 \newline
+\newline
+We can find the poles as the eigenvalues of the $A$ matrix.
+$$
+eig\left(
+\begin{bmatrix}
+0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 & 1 \\
+1 & 2 & -\frac{1}{2} & -1 & -\frac{1}{2} \\
+4 & 0 & 0 & 0 & -3 \\
+\end{bmatrix}
+\right)
+=
+\{-2, -2, -2, 1, 1\}
+$$
+For the poles we look at
+$$
+\begin{bmatrix}
+sI-A & B \\
+-C & D \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+s & 0 & -1 & 0 & 0 & -1 & 1 \\
+0 & s & 0 & -1 & 0 & 1 & 0 \\
+0 & 0 & s & 0 & -1 & 3 & -3 \\
+-1 & -2 & \frac{1}{2} & s+1 & \frac{1}{2} & -2 & 1 \\
+-4 & 0 & 0 & 0 & s+3 & -9 & 9 \\
+0 & 0 & -\frac{3}{4} & 0 & -\frac{1}{4} & 0 & 0 \\
+-\frac{1}{4} & -\frac{1}{2} & \frac{1}{8} & -\frac{1}{2} & \frac{1}{8} & 0 & 0 \\
+\end{bmatrix}
+$$
+We only need to look at when the determinant is zero to find where the matrix becomes rank deficient.
+$$
+det\left(
+\begin{bmatrix}
+s & 0 & -1 & 0 & 0 & -1 & 1 \\
+0 & s & 0 & -1 & 0 & 1 & 0 \\
+0 & 0 & s & 0 & -1 & 3 & -3 \\
+-1 & -2 & \frac{1}{2} & s+1 & \frac{1}{2} & -2 & 1 \\
+-4 & 0 & 0 & 0 & s+3 & -9 & 9 \\
+0 & 0 & -\frac{3}{4} & 0 & -\frac{1}{4} & 0 & 0 \\
+-\frac{1}{4} & -\frac{1}{2} & \frac{1}{8} & -\frac{1}{2} & \frac{1}{8} & 0 & 0 \\
+\end{bmatrix}
+\right)
+=
+-s
+$$
+So our only zero for the system is when $-s = 0$ or when $s=0$.
+\newline
+\fbox{The zeros of our system are $s = 0$ and the poles are $s = \{-2, -2, -2, 1, 1\}$}
 
 \end{enumerate}
 
