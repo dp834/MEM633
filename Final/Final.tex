@@ -72,9 +72,9 @@ d(s) = s^3 + 3s^2 - 4
 $$
 Let $N_2(s) = 0$, $N_1(s)$ be the first term of $N(s)$ without the $s$ and $N_0(s)$ be the last term of $N(s)$
 \newline
-Taking the inverse laplace transform of $\xi(s)$ and $y(s)$ we get
+Taking the inverse Laplace transform of $\xi(s)$ and $y(s)$ we get
 $$
-\dddot{\xi} =  - 3 \ddot{\xi} + 4\xi + u(t)
+\dddot{\xi} =  - 3 \ddot{\xi} + 4\xi + U(t)
 \qquad
 y(t) =
 \begin{bmatrix}
@@ -113,7 +113,7 @@ I \\
 0 \\
 0 \\
 \end{bmatrix}
-u(t)
+U(t)
 $$
 $$
 y(t) =
@@ -126,7 +126,7 @@ N_2 & N_1 & N_0
 \xi \\
 \end{bmatrix}
 +
-0 u(t)
+0 U(t)
 $$
 Now expanding $\xi = \begin{bmatrix} x_1 \\ x_2 \end{bmatrix}$ and plugging in we get
 $$
@@ -164,7 +164,10 @@ x_2 \\
 0 & 0  \\
 0 & 0  \\
 \end{bmatrix}
-u(t)
+\begin{bmatrix}
+u_1 \\
+u_2 \\
+\end{bmatrix}
 $$
 $$
 y(t) =
@@ -266,7 +269,7 @@ The first eigenvalue $-2$ only has rank $5$ while the second has rank $6$. \fbox
 
 
 \item Is it a minimal realization?
-If not, find a similarity transformation to transform the realization into either controllablility or observability decompostion.
+If not, find a similarity transformation to transform the realization into either controllability or observability decomposition.
 Then find a minimal realization by eliminating the uncontrollable and/or unobservable parts of the system.
 \newline
 Since it's not both controllable and observable it's not a minimal realization.
@@ -294,7 +297,7 @@ T =
 \frac{1}{2} & 0 & \frac{1}{4} & \frac{1}{4} & 0 & \frac{1}{4} \\
 \end{bmatrix}
 $$
-Applying the simlarity transform $T$ as $\{\bar{A} = T^{-1}AT, \bar{B}=T^{-1}B, \bar{C}=CT\}$
+Applying the similarity transform $T$ as $\{\bar{A} = T^{-1}AT, \bar{B}=T^{-1}B, \bar{C}=CT\}$
 $$
 \bar{A} =
 \begin{bmatrix}
@@ -437,23 +440,391 @@ $$
 \begin{enumerate}[(a)]
 \item Find a greatest common right divisor (gcrd) of $N(s)$ and $D(s)$.
 \newline
+Constructing a gcrd by performing gaussian elimination on $ \begin{bmatrix} D(s) \\ N(s) \end{bmatrix} $
+$$
+\begin{bmatrix}
+s^3 + 3s^2 -4 & 0 \\
+0 & s^3 + 3s^2 -4 \\
+-s & s \\
+s+1 & 1 \\
+\end{bmatrix}
+$$
+I performed these operations in this order
+$$
+u_1 =
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 1 & 1 \\
+\end{bmatrix}
+\quad
+u_2 =
+\begin{bmatrix}
+0 & 0 & 0 & 1 \\
+1 & 0 & 0 & -s^3-3 s^2+4 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & s \\
+\end{bmatrix}
+\quad
+u_3 =
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 \\
+0 & 0 & 1 & -s-1 \\
+0 & 1 & 0 & s^2+2 s-1 \\
+\end{bmatrix}
+\quad
+u_4 =
+\begin{bmatrix}
+1 & 0 & \frac{1}{2} & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 1 & \frac{s}{2} & 0 \\
+0 & 0 & 1 & 1 \\
+\end{bmatrix}
+$$
+And got the resulting matrix
+$$
+\begin{bmatrix}
+1 & -1 \\
+0 & -2 s-4 \\
+0 & 0 \\
+0 & 0 \\
+\end{bmatrix}
+$$
+Taking the upper square matrix we get that our gcrd is
+$$
+gcrd =
+\begin{bmatrix}
+1 & -1 \\
+0 & -2s-4 \\
+\end{bmatrix}
+$$
 
 \item Find an irreducible right MFD for $H(s)$ by extracting the gcrd of $N(s)$ and $D(s)$.
 \newline
+To solve $N(s) = N_1(s)R(s)$ we can find the inverse of $R(s)$ and use $N(s)R^{-1}(s) = N_1(s)$
+which we know exists since the matrix $\begin{bmatrix} D(s) \\ N(s) \end{bmatrix}$ has full column rank.
+The same argument goes for $D_1(s)$
+$$
+R^{-1}(s) =
+\begin{bmatrix}
+1 & \frac{1}{-2s-4} \\
+0 & \frac{1}{-2s-4} \\
+\end{bmatrix}
+\implies
+N_1(s) =
+\begin{bmatrix}
+-s & 0 \\
+s+1 & -\frac{1}{2} \\
+\end{bmatrix}
+\quad
+D_1(s) =
+(s-1)(s+2)
+\begin{bmatrix}
+s+2 & -\frac{1}{2} \\
+0 & -\frac{1}{2} \\
+\end{bmatrix}
+$$
+We can verify this holds true by plugging back into $H(s) = N(s)D(s)^{-1}$ and see that we get the original system.
+We can also see that
+$$ H(s) = N(s)D(s)^{-1} = N_1(s)R(s)\left(D_1(s)R(s)\right)^{-1} = N_1(s)D_1^{-1}(s) $$
+This is our irreducible right MFD for $H(s)$
+$$
+H(s) =
+\begin{bmatrix}
+-s & 0 \\
+s+1 & -\frac{1}{2} \\
+\end{bmatrix}
+\left(
+(s-1)(s+2)
+\begin{bmatrix}
+s+2 & -\frac{1}{2} \\
+0 & -\frac{1}{2} \\
+\end{bmatrix}
+\right)^{-1}
+$$
 
 \item Determine the poles and zeros of the system based on the irreducible MFD in (b).
 \newline
+Given a MFD the poles of $H(s)$ are the roots of the determinant of $D(s)$.
+The zeros of a square non-singular $H(s)$ as we have are when frequencies when the rank of $N(s)$ drops below its normal rank $det(N(s)) = 0$
+\newline
+Starting with the poles we get
+$$
+(s-1)(s+2)
+\begin{vmatrix}
+s+2 & -\frac{1}{2} \\
+0 & -\frac{1}{2} \\
+\end{vmatrix}
+=
+-\frac{1}{2}(s-1)^2(s+2)^3
+\implies s = \{-2,-2,-2,1,1\}
+$$
+We can see that the poles match our previous result in both value and multiplicity.
+\newline
+For the zeros we get
+$$
+\begin{vmatrix}
+-s & 0 \\
+s+1 & -\frac{1}{2} \\
+\end{vmatrix}
+= \frac{s}{2}
+\implies s = 0
+$$
+Which again matches the zeros for our previous result.
+\newline
+\fbox{The zeros of our system are $s = 0$ and the poles are $s = \{-2, -2, -2, 1, 1\}$}
 
 \item Find a state-space realization for the MFD in (c)
 \newline
+Finding the controller form realization from a right MFD we have
+$$ A_c = A_C^o - B_C^oD_{hc}^{-1}D_{lc} \quad B_c = B_C^oD_{hc}^{-1} \quad C_c = N_{lc} $$
+Where
+\begin{itemize}[$\bullet$]
+\item $A_C^o$ is block diagonal of ones below the diagonal with their number corresponding to how many derivatives are needed for each input.
+\item $B_C^o$ is a column of all zeros except for a 1 corresponding to the start of the block it's associated with.
+\item $D(s) = D_{hc}S(s) + D_{lc}(s)\Psi(s)$ where $S(s)$ is the largest degree $s$ in a column and $\Psi(s)$ is the remaining terms required for each column.
+\item $N(s) = N_{lc}\Psi(s) $ where $\Psi(s)$ is the same as in the $D(s)$ equation.
+\end{itemize}
+Looking at $D(s)$ we can see that the first column is of degree $s^3$ while the second is has degree $s^2$.
+So our realization will be of degree 5, and our $A_C^o$ and $B_C^o$ matrices are given by
+$$
+A_C^o =
+\begin{bmatrix}
+0 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 \\
+\end{bmatrix}
+\quad
+B_C^o =
+\begin{bmatrix}
+1 & 0 \\
+0 & 0 \\
+0 & 0 \\
+0 & 1 \\
+0 & 0 \\
+\end{bmatrix}
+$$
+Our $S(s)$ and $\Psi(s)$ matrices are given by
+$$
+S(s) =
+\begin{bmatrix}
+s^3 & 0 \\
+0 & s^2 \\
+\end{bmatrix}
+\quad
+\Psi(s) =
+\begin{bmatrix}
+s^2 & 0 \\
+s & 0 \\
+1 & 0 \\
+0 & s \\
+0 & 1 \\
+\end{bmatrix}
+$$
+With this we can find the remaining matrices
+$$
+D_{hc} =
+\begin{bmatrix}
+1 & -\frac{1}{2} \\
+0 & -\frac{1}{2} \\
+\end{bmatrix}
+\quad
+D_{lc} =
+\begin{bmatrix}
+3 & 0 & -4 & -\frac{1}{2} & 1 \\
+0 & 0 &  0 & -\frac{1}{2} & 1 \\
+\end{bmatrix}
+\quad
+N_{lc} =
+\begin{bmatrix}
+0 & -1 & 0 & 0 & 0 \\
+0 & 1 & 1 & 0 & -\frac{1}{2} \\
+\end{bmatrix}
+$$
+Plugging in and evaluating for $A_c, B_c, C_c$ we get
+$$
+A_c =
+\begin{bmatrix}
+-3 & 0 & 4 & 0 & 0 \\
+1 & 0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & -1 & 2 \\
+0 & 0 & 0 & 1 & 0 \\
+\end{bmatrix}
+\quad
+B_c =
+\begin{bmatrix}
+1 & -1 \\
+0 & 0 \\
+0 & 0 \\
+0 & -2 \\
+0 & 0 \\
+\end{bmatrix}
+\quad
+C_c =
+\begin{bmatrix}
+0 & -1 & 0 & 0 & 0 \\
+0 & 1 & 1 & 0 & -\frac{1}{2} \\
+\end{bmatrix}
+$$
+Putting it all together our system looks like
+$$
+\begin{bmatrix}
+\dddot{x}_1 \\
+\ddot{x}_1 \\
+\dot{x}_1 \\
+\ddot{x}_2 \\
+\dot{x}_2 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+-3 & 0 & 4 & 0 & 0 \\
+1 & 0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & -1 & 2 \\
+0 & 0 & 0 & 1 & 0 \\
+\end{bmatrix}
+\begin{bmatrix}
+\ddot{x}_1 \\
+\dot{x}_1 \\
+x_1 \\
+\dot{x}_2 \\
+x_2 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+1 & -1 \\
+0 & 0 \\
+0 & 0 \\
+0 & -2 \\
+0 & 0 \\
+\end{bmatrix}
+\begin{bmatrix}
+u_1 \\
+u_2 \\
+\end{bmatrix}
+$$
+$$
+y(t) =
+\begin{bmatrix}
+0 & -1 & 0 & 0 & 0 \\
+0 & 1 & 1 & 0 & -\frac{1}{2} \\
+\end{bmatrix}
+\begin{bmatrix}
+\ddot{x}_1 \\
+\dot{x}_1 \\
+x_1 \\
+\dot{x}_2 \\
+x_2 \\
+\end{bmatrix}
+$$
 
 \item Is the state-space realization controllable and observable? Is it a minimal realization?
 \newline
+We know that this system is minimal since "any realization of an MFD with order equal to the degree of the determinant of the denominator matrix will be minimal if and only if the MFD is irreducible."
+This is taken from the notes in chapter 4B page 28.
+We can still verify it easily with the PBH Test.
+\newline
+We already have the eigenvalues so we just need to test the PBH controllability matrix for $s = \{-2,1\}$
+$$
+\begin{bmatrix}
+s+3 & 0 & -4 & 0 & 0 & 1 & -1 \\
+-1 & s & 0 & 0 & 0 & 0 & 0 \\
+0 & -1 & s & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & s+1 & -2 & 0 & -2 \\
+0 & 0 & 0 & -1 & s & 0 & 0 \\
+\end{bmatrix}
+$$
+Evaluating and finding the rank for both we see that it does in fact has full rank of $5$ for both values.
+\newline
+Next the PBH observability matrix
+$$
+\begin{bmatrix}
+s+3 & 0 & -4 & 0 & 0 \\
+-1 & s & 0 & 0 & 0 \\
+0 & -1 & s & 0 & 0 \\
+0 & 0 & 0 & s+1 & -2 \\
+0 & 0 & 0 & -1 & s \\
+0 & -1 & 0 & 0 & 0 \\
+0 & 1 & 1 & 0 & -\frac{1}{2} \\
+\end{bmatrix}
+$$
+Evaluating and finding the rank for both we see that it again has a full rank of $5$ for both values.
+\newline
+\fbox{The system is both controllable, observable, and therefore minimal realization as we expect from an irreducible MFD}
 
 \item Can you find a similarity transformation which relates the realization in Problem \#1(c) and problem \#2(d)?
 If yes, show the results and procedure. If not explain.
 \newline
-
+We should be able to as they describe the same system and have the same degree.
+To find the transformation we must find a matrix $T$ such that $\{A_2 = T^{-1}A_1T, B_2=T^{-1}B_1, C_2=C_1T\}$
+Where $\{ A_1, B_1, C_1 \}$ represents the minimal representation from the first problem and $\{ A_1, B_1, C_1 \}$ from the second.
+Matrices are similar if they both have the same diagonalization.
+If we diagonailize both matrices
+$$ A_1 = S_1JS_1^{-1} \quad A_2 = S_2JS_2^{-1} \implies S_1^{-1}A_1S_1 = J \quad S_2^{-1}A_2S_2 = J$$
+Combining we get
+$$ S_1^{-1}A_1S_1 = S_2^{-1}A_2S_2  \implies S_2S_1^{-1}A_1 = A_2S_2S_1^{-1}$$
+$$ T = S_1^{-1}S_2 \implies A_2 = T^{-1}A_1T$$
+So we just need to diagonalize by finding the Jordan decomposition since the matricies have repeated eigenvalues.
+$$A_1 \to S_1 =
+\begin{bmatrix}
+0 & -\frac{1}{2} & -\frac{1}{4} & 1 & 0 \\
+-\frac{1}{2} & \frac{1}{4} & \frac{1}{8} & 0 & 1 \\
+0 & 1 & 0 & 1 & 0 \\
+1 & -\frac{1}{2} & 0 & 0 & 1 \\
+0 & -2 & 1 & 1 & 0 \\
+\end{bmatrix}
+\quad
+J =
+\begin{bmatrix}
+-2 & 0 & 0 & 0 & 0 \\
+0 & -2 & 1 & 0 & 0 \\
+0 & 0 & -2 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 & 1 \\
+\end{bmatrix}
+$$
+$$A_2 \to S_2 =
+\begin{bmatrix}
+0 & -4 & 4 & 0 & -1 \\
+0 & 2 & -1 & 0 & -1 \\
+0 & -1 & 0 & 0 & -1 \\
+2 & 0 & 0 & -1 & 0 \\
+-1 & 0 & 0 & -1 & 0 \\
+\end{bmatrix}
+\quad
+J =
+\begin{bmatrix}
+-2 & 0 & 0 & 0 & 0 \\
+0 & -2 & 1 & 0 & 0 \\
+0 & 0 & -2 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 & 1 \\
+\end{bmatrix}
+$$
+Which have the same Jordan decomposition as we expect.
+Computing $T$ we get
+$$
+T =
+S_2S_1^{-1}
+=
+\begin{bmatrix}
+-\frac{11}{3} & -\frac{2}{3} & \frac{1}{2} & -\frac{1}{3} & \frac{19}{6} \\
+\frac{1}{3} & -\frac{2}{3} & \frac{1}{2} & -\frac{1}{3} & -\frac{5}{6} \\
+\frac{1}{3} & -\frac{2}{3} & -\frac{1}{2} & -\frac{1}{3} & \frac{1}{6} \\
+-\frac{10}{9} & -\frac{4}{3} & \frac{2}{9} & \frac{4}{3} & -\frac{1}{9} \\
+-\frac{1}{9} & \frac{2}{3} & -\frac{7}{9} & -\frac{2}{3} & -\frac{1}{9} \\
+\end{bmatrix}
+$$
+Now we can verify that this similarity transformation does convert between the two realizations by performing the computation and checking.
+This works for the $A$ matrix, but the transformation doesn't work for the $B$ and $C$ matrix.
+Since the similarity Jordan decomposition matrices are unique there is only one transformation matrix for the $A$ matrix.
+We can also see that if we apply the Jordan similarity transformation that $\bar{B}_1 \neq \bar{B}_2$ and $\bar{C}_1 \neq \bar{C}_2$ which also shows that there is not a similarity transformation.
+\fbox{There is not a similarity transformation as our state space matrices $A$ are not diagonalizable}
 \end{enumerate}
 
 \newpage
@@ -487,7 +858,7 @@ Consider the following system,
 \end{figure}
 where
 $$ G(s) = \frac{s-2}{s^2-4s} $$
-In the following you wil ldesign an observer-based controller $K(s)$ so that the closed-loop system is stable.
+In the following you will design an observer-based controller $K(s)$ so that the closed-loop system is stable.
 \begin{enumerate}[(a)]
 \item Find a state space representation of $G(s)$.
 \newline
