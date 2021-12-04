@@ -862,18 +862,278 @@ In the following you will design an observer-based controller $K(s)$ so that the
 \begin{enumerate}[(a)]
 \item Find a state space representation of $G(s)$.
 \newline
+Using the controllable canonical form we get
+$$
+A =
+\begin{bmatrix}
+0 & 1 \\
+0 & 4 \\
+\end{bmatrix}
+\quad
+B =
+\begin{bmatrix}
+0 \\
+1 \\
+\end{bmatrix}
+\quad
+C =
+\begin{bmatrix} -2 & 1 \end{bmatrix}
+$$
 
 \item Use the Riccati-equation approach to determine an observer based controller $K_1(s)$ such that the closed loop system is stable.
 \newline
+First we can start by describing the observer.
+$$ \dot{\hat{x}} = A \hat{x} + Bu + H(-C\hat{x} -y) $$
+Where $H$ is our observer gains.
+Grouping we get
+$$ \dot{\hat{x}} = (A - HC)\hat{x} + (B)u +Hy $$
+Our stability is determined by $A-HC$.
+Solving the ARE for our $H$ values we have
+$$ H^T = -R^{-1}CX $$
+Since the observer is the dual of the controller.
+For the first choice of $R$ and $Q$ let them be the identity matrices.
+This should put equal weight on all the parameter.
+Without more insight to the system this should be a safe starting point.
+Solving the Riccati equation we start with the Hamiltonian matrix with the transposed $A$ matrix since we are looking at the observer.
+$$
+H =
+\begin{bmatrix}
+A^T & -C^TR^{-1}C \\
+-Q & -A \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 & 0 & -4 & 2 \\
+1 & 4 & 2 & -1 \\
+-1 & 0 & 0 & -1 \\
+0 & -1 & 0 & -4 \\
+\end{bmatrix}
+$$
+The eigenvalues and eigenvectors of this matrix are
+$$
+\begin{bmatrix}
+-\sqrt{17} \\
+\sqrt{17} \\
+-2 \\
+2 \\
+\end{bmatrix}
+\quad
+\begin{bmatrix}
+-\frac{2}{13} \left(\sqrt{17}-2\right) & \sqrt{17}-4 & \frac{1}{13} \left(\sqrt{17}-2\right) & 1 \\
+\frac{2}{13} \left(2+\sqrt{17}\right) & -4-\sqrt{17} & \frac{1}{13}
+\left(-2-\sqrt{17}\right) & 1 \\
+12 & -4 & 7 & 2 \\
+-2 & 0 & 1 & 0 \\
+\end{bmatrix}
+$$
+To construct $T$ we need the two eigenvectors that have eigenvalues with negative real components.
+That is the second and fourth eigenvalues.
+$$
+T =
+\begin{bmatrix}
+-\frac{2}{13} \left(\sqrt{17}-2\right) & 12 \\
+\sqrt{17}-4 & -4 \\
+\frac{1}{13} \left(\sqrt{17}-2\right) & 7 \\
+1 & 2 \\
+\end{bmatrix}
+\implies T_1 =
+\begin{bmatrix}
+-\frac{2}{13} \left(\sqrt{17}-2\right) & 12 \\
+\sqrt{17}-4 & -4 \\
+\end{bmatrix}
+\quad T_2 =
+\begin{bmatrix}
+\frac{1}{13} \left(\sqrt{17}-2\right) & 7 \\
+1 & 2 \\
+\end{bmatrix}
+$$
+We can find the $X$ with $ X = T_2T_1^{-1} $
+$$
+X =
+\begin{bmatrix}
+\frac{19}{4}+\sqrt{17} & \frac{25}{2}+3 \sqrt{17} \\
+\frac{25}{2}+3 \sqrt{17} & 37+9 \sqrt{17} \\
+\end{bmatrix}
+$$
+With this we can find the observer gains.
+$$ H^T = -R^{-1}CX =
+\begin{bmatrix}
+7.12311 & 24.3693 \\
+\end{bmatrix}
+$$
+We can look at the eigenvalues of $A-HC$ and see that it's equal to the eigenvalues of the Hamiltonian matrix $-\sqrt{17}, -2$.
+\newline
+\newline
+Then we have our state feedback based on our estimated state from the observer.
+$$ u(t) = -F\hat{x} $$
+Plugging in $u(t)$ into the first equation we get
+$$ \dot{\hat{x}} = (A - HC)\hat{x} + (B)u +Hy $$
+$$ \dot{\hat{x}} = (A - HC - BF)\hat{x} +Hy $$
+Expanding we get the system as
+$$ \dot{\hat{x}} = (A - BF - HC)\hat{x} +Hy $$
+$$ u(t) = F\hat{x} $$
+We want to find a stabilizing controller for the $A-BF$ system with the Riccati equation as well.
+Following the same procedure as for the observer we have
+$$
+H =
+\begin{bmatrix}
+A & -BR^{-1}B^T \\
+-Q & -A^T \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 & 1 & 0 & 0 \\
+0 & 4 & 0 & -1 \\
+-1 & 0 & 0 & 0 \\
+0 & -1 & -1 & -4 \\
+\end{bmatrix}
+$$
+The eigenvalues and eigenvectors of this matrix are
+$$
+\begin{bmatrix}
+-4.11594 \\
+ 4.11594 \\
+-0.242958 \\
+0.242958 \\
+\end{bmatrix}
+\quad
+\begin{bmatrix}
+-0.0299359 & 0.123214 & -0.00727315 & 1. \\
+-2.09553 & -8.62507 & 0.509125 & 1. \\
+-0.970064 & 0.235685 & -3.99273 & 1. \\
+1.09553 & 0.266167 & -4.50912 & 1. \\
+\end{bmatrix}
+$$
+To construct $T$ we need the two eigenvectors that have eigenvalues with negative real components.
+That is the second and fourth eigenvalues.
+$$
+T =
+\begin{bmatrix}
+-0.0299359 & -0.970064 \\
+0.123214 & 0.235685 \\
+-0.00727315 & -3.99273 \\
+1. & 1. \\
+\end{bmatrix}
+\implies T_1 =
+\begin{bmatrix}
+-0.0299359 & -0.970064 \\
+0.123214 & 0.235685 \\
+\end{bmatrix}
+\quad T_2 =
+\begin{bmatrix}
+-0.00727315 & -3.99273 \\
+1. & 1. \\
+\end{bmatrix}
+$$
+We can find the $X$ with $ X = T_2T_1^{-1} $
+$$
+X =
+\begin{bmatrix}
+\sqrt{19} & 1 \\
+1 & 4+\sqrt{19} \\
+\end{bmatrix}
+$$
+With this we can find the observer gains.
+$$ F = -R^{-1}B^TX =
+=
+\begin{bmatrix}
+1 & 4+\sqrt{19} \\
+\end{bmatrix}
+$$
+We can look at the eigenvalues of $A-BF$ and see that it's equal to the eigenvalues of the Hamiltonian matrix $-4.11594, -0.242958$.
+\newline
+Combining everything we've solved for we have
+$$ \dot{\hat{x}} = (A - BF - HC)\hat{x} -Hy $$
+$$ u(t) = F\hat{x} $$
+Which we can rewrite into a more normal state space form with
+$$
+A_k = (A-BF-HC)
+\quad
+B_k = H
+\quad
+C_k = F
+$$
+With this we can write the transfer function for our controller with
+$$ K_1(s) = C_k.(s I- A_k)^{-1}.B_k $$
+$$ K_1(s) = \frac{\sqrt{17}-\left(51+13 \sqrt{17}+3 \sqrt{19} \left(4+\sqrt{17}\right)\right) s}{-s\left(s+\sqrt{19}+\sqrt{17}+6\right)+2 \sqrt{19} \left(3+\sqrt{17}\right)+7 \sqrt{17}+26}$$
+Or numerically
+$$ K_1(s) \approx \frac{- 210.824 s + 4.12311 }{-s^2-14.482 s+116.96} $$
 
 \item Find a state space representation of the closed loop system with $y(t)$ as the output.
 \newline
+Let our state variables be $x(t)$ and $\hat{x}(t)$.
+$$
+\begin{bmatrix}
+\dot{x} \\
+\dot{\hat{x}} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+A & -BF \\
+B_kC & A_k \\
+\end{bmatrix}
+\begin{bmatrix}
+x\\
+\hat{x} \\
+\end{bmatrix}
+$$
+Plugging in terms
+$$
+\begin{bmatrix}
+\dot{x}_1 \\
+\dot{x}_2 \\
+\dot{\hat{x}}_1 \\
+\dot{\hat{x}}_2 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+0. & 1. & 0. & 0. \\
+0. & 4. & -1. & -8.3589 \\
+14.2462 & -7.12311 & 14.2462 & -6.12311 \\
+48.7386 & -24.3693 & 47.7386 & -28.7282 \\
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+\hat{x}_1 \\
+\hat{x}_2 \\
+\end{bmatrix}
+$$
+With the output
+$$
+y(t) =
+\begin{bmatrix}
+-2 & 1 & 0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+\hat{x}_1 \\
+\hat{x}_2 \\
+\end{bmatrix}
+$$
+We can find the closed form solution by taking the matrix exponential of the combined state space matrix $A$
 
 \item Verify that the closed loop system poles are the regulator poles together with the observer poles.
 \newline
+Looking at the 4x4 matrix in our closed loop we can check the eigenvalues and we expect them to match the poles chosen during the Riccati equation solving step.
+$$ eig(A_{cl})= \{-4.12311, -4.11594, -2., -0.242958\} $$
+The ones chosen for the observer poles were $\{ -4.12311, -2\}$ which are there.
+The eigenvalues chosen for the controller were $\{-4.11594,-0.242958\}$ which are the remaining two eigenvalues.
+We also know this will be true due to the separation principle since we can write the closed loop dynamics as
+$$
+\begin{bmatrix} \dot{x} \\ \dot{e} \end{bmatrix} =
+\begin{bmatrix}
+A - BK & BK \\
+0 & A - LC \\
+\end{bmatrix}
+\begin{bmatrix} x \\ e \end{bmatrix}
+$$
+Where $e = x -\hat{x}$. This system shows that the eigenvalues of the closes system are those of the diagonal entries separately as it's an upper triangular matrix.
 
 \item Plot the state response for $x(t)$ and $u(t)$ due to the initial conditions $y(0)$, and $\dot{y}(0)$.
 \newline
+
 
 \item Repeat (b), (c), (d), and (e) with a different observer-based controller $K_2(s)$, which is obtained by choosing different weighting matrices in the Riccati equations.
 \newline
