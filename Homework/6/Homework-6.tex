@@ -34,43 +34,98 @@ $ x = \begin{bmatrix} 0 & 0 & x_3 & 0 \end{bmatrix} $
 is a stable equilibrium as all starting points go to this state except the one starting at the other equilibrium.
 This matches what we expect, the pendulum in the downward position is the stable equilibrium of the uncontrolled system.
 The other equilibrium point is the pendulum being perfectally vertical, but that is unstable as any small perterbation will cause the uncontrolled system to go to the other equilibirum state.
+\begin{figure}[htb]
+\centering
+\begin{subfigure}{0.49\linewidth} \centering
+\includegraphics[scale=.6]{images/p1-vertical.png}
+\caption*{$x(0) = \begin{bmatrix} 0 & 0 & 0 & 0 \end{bmatrix}^T$}
+\end{subfigure}
+\begin{subfigure}{0.49\linewidth} \centering
+\includegraphics[scale=.6]{images/p1-slightly-off.png}
+\subcaption*{$x(0) = \begin{bmatrix} 1 & 0 & 0 & 0 \end{bmatrix}^T$}
+\end{subfigure}
+\end{figure}
+
 
 \section*{Problem 2}
 Let the initial conditions be $x_{10} = 0.26rad$, $x_{30} = .2m$, and run the program with at least the following seven state feedback controllers.
+\newline
+\begin{minipage}{0.45\textwidth}
 $$ F_1 = \begin{bmatrix} 120 & 22 & 20 & 28 \end{bmatrix} $$
 $$ F_2 = \frac{1}{2}\begin{bmatrix} 120 & 22 & 20 & 28 \end{bmatrix} $$
 $$ F_3 = \begin{bmatrix} 120 & 22 & 0 & 28 \end{bmatrix} $$
 $$ F_4 = \begin{bmatrix} 90 & 22 & 20 & 28 \end{bmatrix} $$
+\end{minipage}
+\begin{minipage}{0.45\textwidth}
 $$ F_5 = \begin{bmatrix} 60 & 22 & 20 & 28 \end{bmatrix} $$
 $$ F_6 = \begin{bmatrix} 0 & 22 & 20 & 28 \end{bmatrix} $$
 $$ F_7 = \begin{bmatrix} 0 & 0 & 0 & 0 \end{bmatrix} $$
+\end{minipage}
 \newline
 \newline
 \begin{enumerate}[1)]
-\item We can see that the system is controlled and reaches it's equilibirum by 5 seconds and most of the action occurs in the first 2 seconds.
+\item $$ F_1 = \begin{bmatrix} 120 & 22 & 20 & 28 \end{bmatrix} $$
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[scale=.8]{images/p2-1.png}
+\end{minipage}
+We can see that the system is controlled and reaches it's equilibirum by 5 seconds and most of the action occurs in the first 2 seconds.
 The largest input is about 35 units.
 Using this as our base point for the other models we can make qualitative claims about the data.
 
-\item This system while stable and reaches it's equilibirum has a lot of oscillations.
+\item $$ F_2 = \frac{1}{2}\begin{bmatrix} 120 & 22 & 20 & 28 \end{bmatrix} $$
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[scale=.8]{images/p2-2.png}
+\end{minipage}
+This system while stable and reaches it's equilibirum has a lot of oscillations.
 It consistantly overshoots the equilibirum point, and the control is visibly oscillating through the end of the simulation.
 By contrast the max input was about 17 so there is a tradeoff.
 The system is just reacting too slowly the the current state of the system which makes sense as it's just half of the first.
 
-\item This system is stable other than the position of the cart.
+\newpage
+\item $$ F_3 = \begin{bmatrix} 120 & 22 & 0 & 28 \end{bmatrix} $$
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[scale=.8]{images/p2-3.png}
+\end{minipage}
+This system is stable other than the position of the cart.
 It appears to behave very similarly to the first system other than the location of the cart not being brought to zero.
 This is expected as it's gain is set to zero.
 
-\item This system oscillates like the second system, but it reaches a steady steate a bit sooner.
+\item$$ F_4 = \begin{bmatrix} 90 & 22 & 20 & 28 \end{bmatrix} $$
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[scale=.8]{images/p2-4.png}
+\end{minipage}
+This system oscillates like the second system, but it reaches a steady steate a bit sooner.
 It is still reacting too slowly to the most sensitive variable in our system, the angle of the pendulum.
 
-\item This system is clearly unstable, it tries but is unable to keep the pendulum vertical.
+\newpage
+\item $$ F_5 = \begin{bmatrix} 60 & 22 & 20 & 28 \end{bmatrix} $$
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[scale=.8]{images/p2-5.png}
+\end{minipage}
+This system is clearly unstable, it tries but is unable to keep the pendulum vertical.
 It doesn't react to the pendulum angle fast enough and quickly leaves the linearized reagion.
 
-\item This system is also unstable, but it should just ignore the angle of the pendulum and return the cart to the origin.
+\item $$ F_6 = \begin{bmatrix} 0 & 22 & 20 & 28 \end{bmatrix} $$
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[scale=.8]{images/p2-6.png}
+\end{minipage}
+This system is also unstable, but it should just ignore the angle of the pendulum and return the cart to the origin.
 Due to the linearlization region leading to flipped signs once the pendulum has fallen the cart tries to stop the angular velocity of the pendulum but it is doing so incorrectly.
 This leads to the cart just driving away.
 
-\item This system is the system with no input and we know this system is unable to keep the pendulum vertical and makes no effort at correcting the cart's position.
+\newpage
+\item $$ F_7 = \begin{bmatrix} 0 & 0 & 0 & 0 \end{bmatrix} $$
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[scale=.8]{images/p2-7.png}
+\end{minipage}
+This system is the system with no input and we know this system is unable to keep the pendulum vertical and makes no effort at correcting the cart's position.
 \end{enumerate}
 
 \section*{Problem 3}
