@@ -1124,22 +1124,183 @@ We also know this will be true due to the separation principle since we can writ
 $$
 \begin{bmatrix} \dot{x} \\ \dot{e} \end{bmatrix} =
 \begin{bmatrix}
-A - BK & BK \\
-0 & A - LC \\
+A - BF & BF \\
+0 & A - HC \\
 \end{bmatrix}
 \begin{bmatrix} x \\ e \end{bmatrix}
 $$
 Where $e = x -\hat{x}$. This system shows that the eigenvalues of the closes system are those of the diagonal entries separately as it's an upper triangular matrix.
 
-\item Plot the state response for $x(t)$ and $u(t)$ due to the initial conditions $y(0)$, and $\dot{y}(0)$.
+\newpage
+\item Plot the state response for $x(t)$ and $u(t)$ due to the initial conditions $y(0)=1$, and $\dot{y}(0)=0$.
 \newline
-
+Since the derivatives of both $x_1$ and $x_2$ are only dependent on $x_2$ it must be zero due to the initial condition $\dot{y}(0)=0$.
+So $y(0)=1 \implies x_1 = -\frac{1}{2}$.
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.5]{images/p3_cl1_states.png}
+\includegraphics[scale=.5]{images/p3_cl1_input.png}
+\end{figure}
 
 \item Repeat (b), (c), (d), and (e) with a different observer-based controller $K_2(s)$, which is obtained by choosing different weighting matrices in the Riccati equations.
 \newline
+\begin{enumerate}[(a)]
+\setcounter{enumii}{1}
+\item Before we chose the identity for all weighting matricies.
+This time we can give preferential weights to certain terms.
+$$
+R =
+\begin{bmatrix} 1 \end{bmatrix}
+Q =
+\begin{bmatrix} 100 & 0 \\ 0 & 10 \end{bmatrix}
+$$
+This should put a lot of emphasis on the $x_1$ term and try to correct that as soon as possible.
+With $R$ beign the smallest it should not penalize the use of the input very much so can expect larger use of our input.
+Beginning with our observer we get
+$$
+H =
+\begin{bmatrix}
+0 & 0 & -4 & 2 \\
+1 & 4 & 2 & -1 \\
+-100 & 0 & 0 & -1 \\
+0 & -10 & 0 & -4 \\
+\end{bmatrix}
+\implies
+T =
+\begin{bmatrix}
+-3.54336 & 0.0102095 \\
+1.6256 & -0.00382243 \\
+-17.4435 & 0.510112 \\
+1. & 1. \\
+\end{bmatrix}
+\quad \lambda_i = \{-20.256, -3.9618\}
+$$
+$$
+X =
+\begin{bmatrix}
+249.833 & 533.838 \\
+ 533.838 & 1164.24 \\
+\end{bmatrix}
+\implies
+H^T = \begin{bmatrix} 34.1713 & 96.5603 \end{bmatrix}
+$$
+Which has the eigenvalues from the $H$ matrix as we expect.
+\newline
+Now for the controller
+$$
+H =
+\begin{bmatrix}
+0 & 1 & 0 & 0 \\
+0 & 4 & 0 & -1 \\
+-100 & 0 & 0 & 0 \\
+0 & -10 & -1 & -4 \\
+\end{bmatrix}
+\implies
+T =
+\begin{bmatrix}
+-0.0251444 & -0.0748556 \\
+0.116064 & 0.162169 \\
+-0.544734 & -3.45527 \\
+1. & 1. \\
+\end{bmatrix}
+\quad \lambda_i = \{-4.61591, -2.16642\}
+$$
+$$
+X =
+\begin{bmatrix}
+67.8233 & 10. \\
+10. & 10.7823 \\
+\end{bmatrix}
+\implies
+F = \begin{bmatrix} 10 & 10.7823 \end{bmatrix}
+$$
+Which again has the eigenvalues from $H$ that we expect.
+We can now create our $A_k$ $B_k$ and $C_k$ matricies as before and compute our transfer function $K_2(s)$
+$$ K_2(s) = \frac{1382.86 s-401.248}{s^2+35.0001 s-988.355} $$
 
+\item Finding a state space equation as we did before
+$$
+\begin{bmatrix}
+\dot{x} \\
+\dot{\hat{x}} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+A & -BF \\
+B_kC & A_k \\
+\end{bmatrix}
+\begin{bmatrix}
+x\\
+\hat{x} \\
+\end{bmatrix}
+$$
+Plugging in terms gives us
+$$
+\begin{bmatrix}
+\dot{x}_1 \\
+\dot{x}_2 \\
+\dot{\hat{x}}_1 \\
+\dot{\hat{x}}_2 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+0. & 1. & 0. & 0. \\
+0. & 4. & -10. & -10.7823 \\
+-68.3426 & 34.1713 & 68.3426 & -33.1713 \\
+-193.121 & 96.5603 & 183.121 & -103.343 \\
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+\hat{x}_1 \\
+\hat{x}_2 \\
+\end{bmatrix}
+$$
+With the output
+$$
+y(t) =
+\begin{bmatrix}
+-2 & 1 & 0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+\hat{x}_1 \\
+\hat{x}_2 \\
+\end{bmatrix}
+$$
+
+\item Finding the eigenvalues of our closed loop system's $A$ matrix we get
+$$ eig(A) = \{-20.256, -4.61591, -3.96178, -2.16642\} $$
+Which do match the poles chosen by the Riccati equation for the observer $\{-20.256, -3.9618\}$ and the controller $\{-4.61591, -2.16642\}$
+
+\item On the next page
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.5]{images/p3_cl2_states.png}
+\includegraphics[scale=.5]{images/p3_cl2_input.png}
+\end{figure}
+
+\end{enumerate}
+
+\newpage
 \item Comment on how the weighting matrices in the Riccati equation and the pole location of the closed-loop system affect the closed loop system performance.
 \newline
+As expected by decreasing the relative weight of $R$ it allowed the system to apply more control input to they system.
+We can see that the system did apply a large force multiple times compared to the one spike to 20.
+The significantly higher weighting on $x_1$ causes the maximum deviation of it to be much smaller, $2$ vs $5$.
+It's also important to note that this system setteled much faster, in about 3.5 seconds while the first system was still not at zero after 20 seconds.
+The observer values also converged much quicker due to the larger terms as it was able to change it's value quicker (input) and wanted to minimize the $x_1$ error the most.
+\newline
+\newline
+Another intersting example is to swap the $x_1$ and $x_2$ weights in $Q$ as $x_1 = \dot{x}_2$.
+So if we try to keep $x_2$ small we are limiting the rate at which $x_1$ can reach its target value.
+We would expect the $x_2$ value to be close to zero while the $x_1$ value takes a long time to go to zero.
+Which is exactly what we see.
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.35]{images/p3_extra_states.png}
+\end{figure}
 
 \end{enumerate}
 
